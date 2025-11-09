@@ -54,7 +54,7 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// Stage increment
+// Stage increment 2
 
 /* USER CODE END 0 */
 
