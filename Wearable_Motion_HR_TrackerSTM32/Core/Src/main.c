@@ -37,6 +37,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+#define MPU6050 0x68
 
 /* USER CODE END PM */
 
@@ -98,11 +99,32 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  char buffer[16]; // Creating buffer of size 16 (bytes)
-  const char messageA[] = "UART OK"; // Immutable string of <16 char including \0
-  strcpy(buffer, messageA); //Copy into source, char
+  char buffer[32];
+  // Creating buffer of size 16 (bytes)
+  const char messageA[] = "UART Connection OK";
+  // Immutable string of <16 char including \0
+
+  strcpy(buffer, messageA);
+  //Copy into source, char
 
   HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
+  //Confirm UART is OK
+
+  HAL_StatusTypeDef stat = HAL_I2C_IsDeviceReady(&hi2c1, MPU6050 << 1, 1, 100);
+  //Retrieve status of HAL function
+
+  if (stat == HAL_OK) {
+	  strcpy(buffer, "MPU6050 connected");
+	  //Status OK? – copy success message to buffer;
+	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
+
+  }
+  else {
+	  strcpy(buffer, "MPU6050 failed to connect");
+	  //Status not OK? – copy error message to buffer;
+	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
+	  //Transmit over UART
+  }
 
   /* USER CODE END 2 */
 
