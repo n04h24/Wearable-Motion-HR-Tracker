@@ -95,10 +95,15 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_USART2_UART_Init();
+
   /* USER CODE BEGIN 2 */
-  uint8_t buffer[16]; // Creating buffer of size 16 (bytes)
-  const char messageA[] = "UART OK"; // Immutable string of <16 char
-  strcpy((char*)buffer, messageA); //Copy into char*; const char*
+
+  char buffer[16]; // Creating buffer of size 16 (bytes)
+  const char messageA[] = "UART OK"; // Immutable string of <16 char including \0
+  strcpy(buffer, messageA); //Copy into source, char
+
+  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -110,8 +115,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	     }
-  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), HAL_MAX_DELAY);
-  HAL_Delay(500);
+
   /* USER CODE END 3 */
 }
 
