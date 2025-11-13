@@ -103,6 +103,7 @@ x  HAL_Init();
 
   	  // UART Initialisation
 
+  //Check
   char buffer[32];
   // Creating buffer of size 16 (bytes)
   const char messageA[] = "UART connection OK!\n";
