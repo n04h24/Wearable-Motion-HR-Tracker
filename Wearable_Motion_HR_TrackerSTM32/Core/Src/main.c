@@ -135,6 +135,8 @@ int main(void)
 
   	  //MPU6050 I2C Configuration
 
+  //Checking refactor
+
   uint8_t write_memory = 0x00;
   //Set all bits to 0
   uint8_t read_memory;
