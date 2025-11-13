@@ -81,7 +81,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+x  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -195,8 +195,6 @@ int main(void)
 	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
 	  //Transmit over UART
   }
-
-
 
   /* USER CODE END 2 */
 
