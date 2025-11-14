@@ -40,6 +40,7 @@
 #define MPU6050 0x68
 #define ACCEL_CONFIG 0x1C
 #define PWR_MGMT_1 0x6B
+#define VAR_NAME(var) #var
 
 /* USER CODE END PM */
 
@@ -81,7 +82,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-x  HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -136,6 +137,7 @@ x  HAL_Init();
 
   	  //MPU6050 I2C Configuration
 
+
   uint8_t write_memory = 0x00;
   //Set all bits to 0
   uint8_t read_memory;
@@ -164,6 +166,10 @@ x  HAL_Init();
 
   write_memory = 0xF0;
   //Set to 0b11110000
+
+  snprintf(buffer, sizeof(buffer), "Unpacking %s...\n", VAR_NAME(ACCEL_CONFIG));
+
+  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
 
   status = HAL_I2C_Mem_Write(&hi2c1, MPU6050 << 1, ACCEL_CONFIG, I2C_MEMADD_SIZE_8BIT, &write_memory, 1, 100);
   //Configure XYZ accelerometer self-test (±8g recommended range)
