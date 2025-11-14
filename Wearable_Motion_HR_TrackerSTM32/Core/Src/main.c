@@ -40,7 +40,7 @@
 #define MPU6050 0x68
 #define ACCEL_CONFIG 0x1C
 #define PWR_MGMT_1 0x6B
-#define VAR_NAME(var) #var
+#define SMPLRT_DIV 0x19
 
 /* USER CODE END PM */
 
@@ -148,6 +148,8 @@ int main(void)
   //Exit Sleep
   config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
   //Trigger Self-Test (Accelerometer)
+  config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
+  //SMPLRT_DIV: 79 (100-times/second)
 
   uint8_t read_value;
   	  //Temporary storage
