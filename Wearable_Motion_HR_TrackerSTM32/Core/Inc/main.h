@@ -28,7 +28,8 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g0xx_hal.h"
-
+#include <stdio.h>
+#include <string.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -40,7 +41,7 @@ extern I2C_HandleTypeDef hi2c1;
 
 extern UART_HandleTypeDef huart2;
 
-extern uint8_t read_mem;
+extern uint8_t check_mem;
 
 extern char UART[64];
 /* USER CODE END ET */
