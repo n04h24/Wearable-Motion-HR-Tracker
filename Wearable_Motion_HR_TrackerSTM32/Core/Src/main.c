@@ -99,48 +99,12 @@ int main(void)
 
   char UART[64]; // EXTERNAL
 
-  void config_I2Cmem(uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size) {
+  config_I2Cmem(UART, sizeof(UART), MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
-	  HAL_StatusTypeDef status = HAL_I2C_Mem_Write(&hi2c1, device << 1, memory_add, mem_size, &write_mem, data_size, 100);
-	  //Write intended data
-	  if (status == HAL_OK){
-		  snprintf(UART, sizeof(UART), "Write to register 0x%02X success! (see datasheet)\n", memory_add);
-		  //
-		  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-		  //
-	  }
+  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
 
-	  else {
-		  snprintf(UART, sizeof(UART), "Write to register 0x%02X failed!\n", memory_add);
-		  //
-		  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-		  //
-	  }
-	  //Temporary memory-read storage
-	  status = HAL_I2C_Mem_Read(&hi2c1, device << 1, memory_add, mem_size, &check_memory, data_size, 100);
-	  //Read memory just written-to
-	  if (status == HAL_OK){
-		  snprintf(UART, sizeof(UART), "New register 0x%02X value is 0x%02X\n", memory_add, check_memory);
-		  //
-		  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-		  //
-	 	  }
-
-	  else {
-		  snprintf(UART, sizeof(UART), "Cannot read 0x%02X register...\n", memory_add);
-		  //
-		  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-		  //
-	  }
-  }
-
-  config_I2Cmem(MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
-  //Exit Sleep
-  config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
-  //Trigger Self-Test (Accelerometer)
-  config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
+  config_I2Cmem(UART, sizeof(UART), MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
   //SMPLRT_DIV: 79 (100-times/second)
-
 
 
   //TEST X(1)
