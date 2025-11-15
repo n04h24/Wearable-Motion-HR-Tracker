@@ -37,17 +37,13 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define MPU6050 0x68
-#define ACCEL_CONFIG 0x1C
-#define PWR_MGMT_1 0x6B
-#define SMPLRT_DIV 0x19
 
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c1; // EXTERNAL
 
-UART_HandleTypeDef huart2;
+UART_HandleTypeDef huart2; // EXTERNAL
 
 /* USER CODE BEGIN PV */
 
@@ -102,10 +98,9 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  	  // UART Initialisation
+  char UART[64]; // EXTERNAL
 
-  char UART[64];
-  //UART buffer initialisation
+  uint8_t read_mem; // EXTERNAL
 
   void config_I2Cmem(uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size) {
 
@@ -124,8 +119,6 @@ int main(void)
 		  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 		  //
 	  }
-
-	  uint8_t read_mem;
 	  //Temporary memory-read storage
 	  status = HAL_I2C_Mem_Read(&hi2c1, device << 1, memory_add, mem_size, &read_mem, data_size, 100);
 	  //Read memory just written-to
@@ -183,13 +176,13 @@ int main(void)
   	  //Value is: 0b10010101
 
   //TEST XYZ(2)
-    HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x10, I2C_MEMADD_SIZE_8BIT, &read_value, 1, 100);
-  	  //Read Self-Test X
-    snprintf(UART, sizeof(UART), "Self-Test Z-value is 0x%02X\n", read_value);
-    	  //Format Self-Test X (string)
-    HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-    	  //Print to UART
-    	  //Value is: 0b01100111
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x10, I2C_MEMADD_SIZE_8BIT, &read_value, 1, 100);
+	  //Read Self-Test X
+	snprintf(UART, sizeof(UART), "Self-Test Z-value is 0x%02X\n", read_value);
+		  //Format Self-Test X (string)
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+		  //Print to UART
+		  //Value is: 0b01100111
 
     /*Therefore, concatenated:
      * X: 11010
