@@ -17,7 +17,7 @@ void config_I2Cmem(char *buffer, size_t size_buff, uint16_t device, uint16_t mem
 	HAL_StatusTypeDef status = HAL_I2C_Mem_Write(&hi2c1, device << 1, memory_add, mem_size, &write_mem, data_size, 100);
 
 	if (status == HAL_OK){
-		  snprintf(buffer, size_buff, "Write to register 0x%02X success! (see datasheet)\n", memory_add);
+		  snprintf(buffer, size_buff, "Write to register 0x%02X success! (see data-sheet)\n", memory_add);
 		  //
 		  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 		  //
