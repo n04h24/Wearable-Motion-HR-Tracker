@@ -41,8 +41,6 @@ extern I2C_HandleTypeDef hi2c1;
 
 extern UART_HandleTypeDef huart2;
 
-extern uint8_t check_mem;
-
 extern char UART[64];
 /* USER CODE END ET */
 
