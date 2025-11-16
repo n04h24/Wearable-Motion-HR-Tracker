@@ -106,54 +106,15 @@ int main(void)
   config_I2Cmem(UART, sizeof(UART), MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
   //SMPLRT_DIV: 79 (100-times/second)
 
+  self_testXYZ(UART, sizeof(UART));
 
-  //TEST X(1)
-  HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0D, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-	  //Read Self-Test X
-  snprintf(UART, sizeof(UART), "Self-Test X-value is 0x%02X\n", check_memory);
-	  //Format Self-Test X (string)
-  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-	  //Print to UART
-	  //Value is: 0b1101110
-
-  //TEST Y(1)
-  HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0E, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-	  //Read Self-Test X
-  snprintf(UART, sizeof(UART), "Self-Test Y-value is 0x%02X\n", check_memory);
-  	  //Format Self-Test X (string)
-  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-  	  //Print to UART
-  	  //Value is: 0b1101111
-
-
-  //TEST Z(1)
-  HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0F, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-	  //Read Self-Test X
-  snprintf(UART, sizeof(UART), "Self-Test Z-value is 0x%02X\n", check_memory);
-  	  //Format Self-Test X (string)
-  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-  	  //Print to UART
-  	  //Value is: 0b10010101
-
-  //TEST XYZ(2)
-	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x10, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-	  //Read Self-Test X
-	snprintf(UART, sizeof(UART), "Self-Test Z-value is 0x%02X\n", check_memory);
-		  //Format Self-Test X (string)
-	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-		  //Print to UART
-		  //Value is: 0b01100111
-
-    /*Therefore, concatenated:
-     * X: 11010
-     * Y: 11001
-     * Z: 10011
-	*/
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
+
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
 
