@@ -8,7 +8,7 @@
 
 #include "MPU6050_conf.h"
 
-// Function implementatino (MPU6050_conf.h)
+// Function implementation (MPU6050_conf.h)
 
 uint8_t check_memory; // EXTERNAL
 
