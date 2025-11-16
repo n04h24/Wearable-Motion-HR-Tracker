@@ -108,7 +108,6 @@ int main(void)
 
   self_testXYZ(UART, sizeof(UART));
 
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
