@@ -110,7 +110,13 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 	    * Z:(000)10011
 	    *
 		*/
-	float FT_Xa = 4096 * 0.34 * pow((0.92/0.34), (XA_TEST-1/(pow(2,5)-2)));
+
+	float base_fraction = 0.92/0.34;
+	float exp_fraction = (XA_TEST-1)/(pow(2,5)-2);
+
+	float FT_Xa = 4096 * 0.34 * pow(base_fraction, exp_fraction);
+
+//	float FT_Xa = 4096 * 0.34 * pow((0.92/0.34), (XA_TEST-1/(pow(2,5)-2)));
 	float FT_Ya = 4096 * 0.34 * pow((0.92/0.34), (YA_TEST-1/(pow(2,5)-2)));
 	float FT_Za = 4096 * 0.34 * pow((0.92/0.34), (ZA_TEST-1/(pow(2,5)-2)));
 
