@@ -92,16 +92,16 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 	uint8_t YA_testB = (check_memory & 0x0C) >> 2;
 	uint8_t ZA_testB = (check_memory & 0x03);
 
-	uint8_t XA_test = XA_testA | XA_testB; //
-	snprintf(buffer, size_buff, "Concatenated X Self-Test is 0x%02X\n", XA_test);
+	uint8_t XA_TEST = XA_testA | XA_testB; //
+	snprintf(buffer, size_buff, "Concatenated X Self-Test is 0x%02X\n", XA_TEST);
 	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
 
-	uint8_t YA_test = YA_testA | YA_testB;
-	snprintf(buffer, size_buff, "Concatenated Y Self-Test is 0x%02X\n", YA_test);
+	uint8_t YA_TEST = YA_testA | YA_testB;
+	snprintf(buffer, size_buff, "Concatenated Y Self-Test is 0x%02X\n", YA_TEST);
 	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
 
-	uint8_t ZA_test = ZA_testA | ZA_testB;
-	snprintf(buffer, size_buff, "Concatenated Z Self-Test is 0x%02X\n", ZA_test);
+	uint8_t ZA_TEST = ZA_testA | ZA_testB;
+	snprintf(buffer, size_buff, "Concatenated Z Self-Test is 0x%02X\n", ZA_TEST);
 	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
 
 	   /*Therefore, concatenated:b
@@ -110,9 +110,13 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 	    * Z:(000)10011
 	    *
 		*/
-}
+	float FT_Xa = 4096 * 0.34 * pow((0.92/0.34), (XA_TEST-1/(pow(2,5)-2)));
+	float FT_Ya = 4096 * 0.34 * pow((0.92/0.34), (YA_TEST-1/(pow(2,5)-2)));
+	float FT_Za = 4096 * 0.34 * pow((0.92/0.34), (ZA_TEST-1/(pow(2,5)-2)));
 
-void factory_trim() {
-	//Null
+	snprintf(buffer, size_buff, "FT_Xa is %lf\nFT_Ya is %lf\nFT_Za is %lf\n", FT_Xa, FT_Ya, FT_Za);
+
+	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
+
 }
 

@@ -97,7 +97,7 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  char UART[64]; // EXTERNAL
+  char UART[128]; // EXTERNAL
 
   config_I2Cmem(UART, sizeof(UART), MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
