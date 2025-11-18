@@ -49,7 +49,9 @@ void config_I2Cmem(char *buffer, size_t size_buff, uint16_t device, uint16_t mem
 
 void self_testXYZ(char *buffer, size_t size_buff) {
 
-	//TEST X(1)
+	/* Retrieval */
+
+	 /* Test X (3-bit)  */
 	 HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0D, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 		  //Read Self-Test X
 	 snprintf(buffer, size_buff, "Self-Test X-value is 0x%02X\n", check_memory);
@@ -59,7 +61,7 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 		  //Value is: 0b1101110
 	 uint8_t XA_testA = (check_memory & 0xE0) >> 3;
 
-	 //TEST Y(1)
+	 /* Test Y (3-bit)  */
 	 HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0E, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 		  //Read Self-Test Y
 	 snprintf(buffer, size_buff, "Self-Test Y-value is 0x%02X\n", check_memory);
@@ -69,7 +71,7 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 	 	  //Value is: 0b01101111
 	 uint8_t YA_testA = (check_memory & 0xE0) >> 3;
 
-	 //TEST Z(1)
+	 /* Test Z (3-bit) */
 	 HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0F, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 		  //Read Self-Test Z
 	 snprintf(buffer, size_buff, "Self-Test Z-value is 0x%02X\n", check_memory);
@@ -79,7 +81,7 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 	 	  //Value is: 0b10010101
 	 uint8_t ZA_testA = (check_memory & 0xE0) >> 3;
 
-	 //TEST XYZ(2)
+	 /* Test XYZ (2-bit) */
 		HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x10, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 		  //Read Self-Test X
 		snprintf(buffer, size_buff, "Self-Test XYZ-value is 0x%02X\n", check_memory);
@@ -87,6 +89,8 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
 			  //Print to UART
 			  //Value is: 0b01100111
+
+	/* Concatenations */
 
 	uint8_t XA_testB = (check_memory & 0x30) >> 4;
 	uint8_t YA_testB = (check_memory & 0x0C) >> 2;
@@ -111,6 +115,8 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 	    *
 		*/
 
+	/* Calculations */
+
 	float cmplx_exp(uint8_t TEST_VAL){
 
 		float exponent = (TEST_VAL-1)/(pow(2,5)-2);
@@ -123,7 +129,7 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 	float FT_Za = 4096 * 0.34 * pow(0.92, cmplx_exp(ZA_TEST))/0.34;
 
 
-	snprintf(buffer, size_buff, "FT_Xa is %lf\nFT_Ya is %lf\nFT_Za is %lf\n", FT_Xa, FT_Ya, FT_Za);
+	snprintf(buffer, size_buff, "Factory Trims:\n FT_Xa is %lf\nFT_Ya is %lf\nFT_Za is %lf\n", FT_Xa, FT_Ya, FT_Za);
 
 	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
 

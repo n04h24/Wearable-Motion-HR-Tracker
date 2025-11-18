@@ -77,7 +77,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+ HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -99,14 +99,25 @@ int main(void)
 
   char UART[128]; // EXTERNAL
 
-  config_I2Cmem(UART, sizeof(UART), MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+  self_testXYZ(UART, sizeof(UART));
+  //Reads and concatenates 5-bit LSB
 
-  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
+  config_I2Cmem(UART, sizeof(UART), MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+  //Wakes device
+
+  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0x70, I2C_MEMADD_SIZE_8BIT, 1);
+  //Triggers accelerometer self-test
 
   config_I2Cmem(UART, sizeof(UART), MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
   //SMPLRT_DIV: 79 (100-times/second)
 
   self_testXYZ(UART, sizeof(UART));
+  //Reads and concatenates after self-test
+
+  snprintf(UART, sizeof(UART), "\n");
+  //newline
+  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
+  //" "
 
   /* USER CODE END 2 */
 
