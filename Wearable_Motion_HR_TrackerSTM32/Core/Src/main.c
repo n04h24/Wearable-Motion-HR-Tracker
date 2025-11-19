@@ -99,13 +99,13 @@ int main(void)
 
   char UART[128]; // EXTERNAL
 
-  self_testXYZ(UART, sizeof(UART));
-  //Reads and concatenates 5-bit LSB
-
   config_I2Cmem(UART, sizeof(UART), MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
   //Wakes device
 
-  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0x70, I2C_MEMADD_SIZE_8BIT, 1);
+  self_testXYZ(UART, sizeof(UART));
+  //Reads and concatenates 5-bit LSB
+
+  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0x90, I2C_MEMADD_SIZE_8BIT, 1);
   //Triggers accelerometer self-test
 
   config_I2Cmem(UART, sizeof(UART), MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);

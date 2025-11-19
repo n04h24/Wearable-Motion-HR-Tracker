@@ -117,16 +117,16 @@ void self_testXYZ(char *buffer, size_t size_buff) {
 
 	/* Calculations */
 
-	float cmplx_exp(uint8_t TEST_VAL){
+	float exponent(uint8_t TEST_VAL){
 
 		float exponent = (TEST_VAL-1)/(pow(2,5)-2);
 		//Simplified
 		return exponent;
 	}
 
-	float FT_Xa = 4096 * 0.34 * pow(0.92, cmplx_exp(XA_TEST))/0.34;
-	float FT_Ya = 4096 * 0.34 * pow(0.92, cmplx_exp(YA_TEST))/0.34;
-	float FT_Za = 4096 * 0.34 * pow(0.92, cmplx_exp(ZA_TEST))/0.34;
+	float FT_Xa = 4096 * 0.34 * pow(0.92, exponent(XA_TEST))/0.34;
+	float FT_Ya = 4096 * 0.34 * pow(0.92, exponent(YA_TEST))/0.34;
+	float FT_Za = 4096 * 0.34 * pow(0.92, exponent(ZA_TEST))/0.34;
 
 
 	snprintf(buffer, size_buff, "Factory Trims:\n FT_Xa is %lf\nFT_Ya is %lf\nFT_Za is %lf\n", FT_Xa, FT_Ya, FT_Za);
