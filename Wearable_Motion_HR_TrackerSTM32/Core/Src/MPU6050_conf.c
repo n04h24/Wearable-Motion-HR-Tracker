@@ -116,5 +116,14 @@ void check_accel() {
 	snprintf(UART, UART_BUFF_SIZE, "X (Low) Value is 0x%02X\n", ACCEL_X_L);
 	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 
+	uint16_t ACCEL_X = (ACCEL_X_H << 8) | ACCEL_X_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw X Value is: %" PRId16 "\n", ACCEL_X);
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	ACCEL_X = ACCEL_X / 4096;
+	snprintf(UART, UART_BUFF_SIZE, "X Value divided by sensitivity is: %" PRId16 "\n", ACCEL_X);
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+
 }
 

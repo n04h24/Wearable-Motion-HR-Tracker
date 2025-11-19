@@ -4,6 +4,7 @@
 /* Includes */
 #include "main.h"
 #include <math.h>
+#include <inttypes.h>
 
 /* Defines */
 #define ACCEL_XOUT_H 0x3B

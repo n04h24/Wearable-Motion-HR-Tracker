@@ -102,8 +102,8 @@ int main(void)
   config_I2Cmem(MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
   //Wakes device
 
-  config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xE0, I2C_MEMADD_SIZE_8BIT, 1);
-  //Triggers accelerometer self-test
+  config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
+  //Triggers accelerometer self-test; ±8g for XYZ
 
   config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
   //SMPLRT_DIV: 79 (100-times/second)
