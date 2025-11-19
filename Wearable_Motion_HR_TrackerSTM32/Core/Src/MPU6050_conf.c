@@ -105,7 +105,16 @@ void calc_FTa(char *buffer, size_t size_buff) {
 
 void check_accel(char *buffer, size_t size_buff) {
 
+	/* X acceleration */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_X_H = check_memory;
+	snprintf(buffer, size_buff, "X (High) Value is 0x%02X\n", ACCEL_X_H);
+	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
 
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_X_L = check_memory;
+	snprintf(buffer, size_buff, "X (Low) Value is 0x%02X\n", ACCEL_X_L);
+	HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), 100);
 
 }
 

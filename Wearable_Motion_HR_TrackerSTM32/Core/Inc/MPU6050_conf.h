@@ -6,6 +6,12 @@
 #include <math.h>
 
 /* Defines */
+#define ACCEL_XOUT_H 0x3B
+#define ACCEL_XOUT_L 0x3C
+#define ACCEL_YOUT_H 0x3D
+#define ACCEL_YOUT_L 0x3E
+#define ACCEL_ZOUT_H 0x3F
+#define ACCEL_ZOUT_L 0x40
 
 /* Externs */
 extern uint8_t check_memory;

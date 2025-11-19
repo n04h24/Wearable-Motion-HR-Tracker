@@ -111,7 +111,7 @@ int main(void)
   calc_FTa(UART, sizeof(UART));
   //Reads and concatenates 5-bit Factory Trims
 
-//  check_accel();
+  check_accel(UART, sizeof(UART));
 
   snprintf(UART, sizeof(UART), "\n");
   //newline
