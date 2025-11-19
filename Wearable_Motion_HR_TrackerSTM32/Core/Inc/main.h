@@ -41,7 +41,8 @@ extern I2C_HandleTypeDef hi2c1;
 
 extern UART_HandleTypeDef huart2;
 
-extern char UART[64];
+#define UART_BUFF_SIZE 128
+extern char UART[UART_BUFF_SIZE];
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

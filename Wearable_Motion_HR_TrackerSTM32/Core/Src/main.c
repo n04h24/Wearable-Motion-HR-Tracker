@@ -44,6 +44,8 @@ I2C_HandleTypeDef hi2c1; // EXTERNAL
 
 UART_HandleTypeDef huart2; // EXTERNAL
 
+char UART[UART_BUFF_SIZE]; // EXTERNAL
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -97,21 +99,19 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  char UART[128]; // EXTERNAL
-
-  config_I2Cmem(UART, sizeof(UART), MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+  config_I2Cmem(MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
   //Wakes device
 
-  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0xE0, I2C_MEMADD_SIZE_8BIT, 1);
+  config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xE0, I2C_MEMADD_SIZE_8BIT, 1);
   //Triggers accelerometer self-test
 
-  config_I2Cmem(UART, sizeof(UART), MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
+  config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
   //SMPLRT_DIV: 79 (100-times/second)
 
-  calc_FTa(UART, sizeof(UART));
+  calc_FTa();
   //Reads and concatenates 5-bit Factory Trims
 
-  check_accel(UART, sizeof(UART));
+  check_accel();
 
   snprintf(UART, sizeof(UART), "\n");
   //newline
