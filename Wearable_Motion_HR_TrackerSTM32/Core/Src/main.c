@@ -102,17 +102,16 @@ int main(void)
   config_I2Cmem(UART, sizeof(UART), MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
   //Wakes device
 
-  self_testXYZ(UART, sizeof(UART));
-  //Reads and concatenates 5-bit LSB
-
-  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0x90, I2C_MEMADD_SIZE_8BIT, 1);
+  config_I2Cmem(UART, sizeof(UART), MPU6050, ACCEL_CONFIG, 0xE0, I2C_MEMADD_SIZE_8BIT, 1);
   //Triggers accelerometer self-test
 
   config_I2Cmem(UART, sizeof(UART), MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
   //SMPLRT_DIV: 79 (100-times/second)
 
-  self_testXYZ(UART, sizeof(UART));
-  //Reads and concatenates after self-test
+  calc_FTa(UART, sizeof(UART));
+  //Reads and concatenates 5-bit Factory Trims
+
+//  check_accel();
 
   snprintf(UART, sizeof(UART), "\n");
   //newline

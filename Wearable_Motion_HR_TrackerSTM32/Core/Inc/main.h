@@ -55,6 +55,14 @@ extern char UART[64];
 #define ACCEL_CONFIG 0x1C
 #define PWR_MGMT_1 0x6B
 #define SMPLRT_DIV 0x19
+
+#define ACCEL_XOUT_U 0x3B
+#define ACCEL_XOUT_L 0x3C
+#define ACCEL_YOUT_U 0x3D
+#define ACCEL_YOUT_L 0x3E
+#define ACCEL_ZOUT_U 0x3F
+#define ACCEL_ZOUT_L 0x40
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
