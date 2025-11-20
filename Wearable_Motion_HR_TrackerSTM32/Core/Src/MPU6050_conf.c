@@ -301,10 +301,27 @@ void startSFT() {
 	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 	//Prints +/-
 
+	/* Change% Equation */
 	float X_SFT = ((rawACCEL_X2 - rawACCEL_X1) - FT.Xa)/FT.Xa + 1;
 	float Y_SFT = ((rawACCEL_Y2 - rawACCEL_Y1) - FT.Ya)/FT.Ya + 1;
 	float Z_SFT = ((rawACCEL_Z2 - rawACCEL_Z1) - FT.Za)/FT.Za + 1;
 	//(SML value – LRG Trim) / LRG Trim = Negative
+
+	/* PASS/FAIL condition */
+	if ((X_SFT < 0.15) && (X_SFT > -0.15)){
+		snprintf(UART, UART_BUFF_SIZE, "X = PASS\n");
+		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+	}
+	if ((Y_SFT < 0.15) && (Y_SFT > -0.15)){
+		snprintf(UART, UART_BUFF_SIZE, "Y = PASS\n");
+		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+	}
+	if ((Z_SFT < 0.15) && (Z_SFT > -0.15)){
+		snprintf(UART, UART_BUFF_SIZE, "Z = PASS\n");
+		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+	}
+
+
 
 	snprintf(UART, UART_BUFF_SIZE, "X Self-Test = %f\nY Self-Test = %f\nZ Self-Test = %f\n", X_SFT, Y_SFT, Z_SFT);
 	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
