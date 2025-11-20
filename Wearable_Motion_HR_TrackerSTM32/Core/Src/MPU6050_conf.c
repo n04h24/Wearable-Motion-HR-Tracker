@@ -12,6 +12,8 @@
 
 uint8_t check_memory; // EXTERNAL
 
+FactoryTrims FT;
+
 void config_I2Cmem(uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size){
 
 	HAL_StatusTypeDef status = HAL_I2C_Mem_Write(&hi2c1, device << 1, memory_add, mem_size, &write_mem, data_size, 100);
@@ -94,11 +96,11 @@ void calc_FTa(char *buffer, size_t size_buff) {
 
 	}
 
-	float FT_Xa = 4096 * 0.34 * pow(0.92, exp(XA_TEST))/0.34;
-	float FT_Ya = 4096 * 0.34 * pow(0.92, exp(YA_TEST))/0.34;
-	float FT_Za = 4096 * 0.34 * pow(0.92, exp(ZA_TEST))/0.34;
+	FT.Xa = 4096 * 0.34 * pow(0.92, exp(XA_TEST))/0.34;
+	FT.Ya = 4096 * 0.34 * pow(0.92, exp(YA_TEST))/0.34;
+	FT.Za = 4096 * 0.34 * pow(0.92, exp(ZA_TEST))/0.34;
 
-	snprintf(UART, UART_BUFF_SIZE, "Factory Trims are:\n FT_Xa is %f\nFT_Ya is %f\nFT_Za is %f\n", FT_Xa, FT_Ya, FT_Za);
+	snprintf(UART, UART_BUFF_SIZE, "Factory Trims are:\n FT_Xa is %f\nFT_Ya is %f\nFT_Za is %f\n", FT.Xa, FT.Ya, FT.Za);
 	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 
 }
@@ -109,25 +111,202 @@ void check_accel() {
 	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	uint8_t ACCEL_X_H = check_memory;
 	snprintf(UART, UART_BUFF_SIZE, "X (High) Value is 0x%02X\n", ACCEL_X_H);
-	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 
 	/* Retrieve lower-X value */
 	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	uint8_t ACCEL_X_L = check_memory;
 	snprintf(UART, UART_BUFF_SIZE, "X (Low) Value is 0x%02X\n", ACCEL_X_L);
-	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 
 	/* Shift upper << 8; | operation to combine lower */
 	uint16_t rawACCEL_X = (ACCEL_X_H << 8) | ACCEL_X_L;
 	snprintf(UART, UART_BUFF_SIZE, "Raw X Value is: %" PRId16 "\n", rawACCEL_X);
 	//Signed 16-bit specifier
-	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 	//Prints +/-
 
 	/* Divide by LSB/g value */
 	float ACCEL_X = (float) rawACCEL_X / 4096;
 	snprintf(UART, UART_BUFF_SIZE, "X Value divided by sensitivity is: %fs^2\n", ACCEL_X);
 	//ERROR:
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+
+	/* Retrieve upper-Y value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Y_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Y (High) Value is 0x%02X\n", ACCEL_Y_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-X value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Y_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Y (Low) Value is 0x%02X\n", ACCEL_Y_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_Y = (ACCEL_Y_H << 8) | ACCEL_Y_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw Y Value is: %" PRId16 "\n", rawACCEL_Y);
+	//Signed 16-bit specifier
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+	//Prints +/-
+
+	/* Divide by LSB/g value */
+	float ACCEL_Y = (float) rawACCEL_Y / 4096;
+	snprintf(UART, UART_BUFF_SIZE, "Y Value divided by sensitivity is: %fs^2\n", ACCEL_Y);
+	//ERROR:
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+
+	/* Retrieve upper-Z value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Z_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Z (High) Value is 0x%02X\n", ACCEL_Z_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-Z value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Z_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Z (Low) Value is 0x%02X\n", ACCEL_Z_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_Z = (ACCEL_Z_H << 8) | ACCEL_Z_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw Z Value is: %" PRId16 "\n", rawACCEL_Z);
+	//Signed 16-bit specifier
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+	//Prints +/-
+
+	/* Divide by LSB/g value */
+	float ACCEL_Z = (float) rawACCEL_Z / 4096;
+	snprintf(UART, UART_BUFF_SIZE, "Z Value divided by sensitivity is: %fs^2\n", ACCEL_Z);
+	//ERROR:
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+}
+
+void startSFT() {
+
+	/* Retrieve upper-X value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_X_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "X (High) Value is 0x%02X\n", ACCEL_X_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-X value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_X_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "X (Low) Value is 0x%02X\n", ACCEL_X_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_X1 = (ACCEL_X_H << 8) | ACCEL_X_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw X Value is: %" PRId16 "\n", rawACCEL_X1);
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve upper-Y value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Y_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Y (High) Value is 0x%02X\n", ACCEL_Y_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-Y value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Y_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Y (Low) Value is 0x%02X\n", ACCEL_Y_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_Y1 = (ACCEL_Y_H << 8) | ACCEL_Y_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw Y Value is: %" PRId16 "\n", rawACCEL_Y1);
+	//Signed 16-bit specifier
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve upper-Z value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Z_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Z (High) Value is 0x%02X\n", ACCEL_Z_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-Z value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	uint8_t ACCEL_Z_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Z (Low) Value is 0x%02X\n", ACCEL_Z_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_Z1 = (ACCEL_Z_H << 8) | ACCEL_Z_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw Z Value is: %" PRId16 "\n", rawACCEL_Z1);
+	//Signed 16-bit specifier
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+	//Prints +/-
+
+	/* Before Self-Test */
+	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
+	/* After Self-Test */
+	/* Triggers accelerometer self-test; ±8g for XYZ */
+
+	/* Retrieve upper-X value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	ACCEL_X_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "X (High) Value is 0x%02X\n", ACCEL_X_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-X value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	ACCEL_X_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "X (Low) Value is 0x%02X\n", ACCEL_X_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_X2 = (ACCEL_X_H << 8) | ACCEL_X_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw X Value is: %" PRId16 "\n", rawACCEL_X2);
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve upper-Y value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	ACCEL_Y_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Y (High) Value is 0x%02X\n", ACCEL_Y_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-Y value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	ACCEL_Y_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Y (Low) Value is 0x%02X\n", ACCEL_Y_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_Y2 = (ACCEL_Y_H << 8) | ACCEL_Y_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw Y Value is: %" PRId16 "\n", rawACCEL_Y2);
+	//Signed 16-bit specifier
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve upper-Z value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	ACCEL_Z_H = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Z (High) Value is 0x%02X\n", ACCEL_Z_H);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Retrieve lower-Z value */
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	ACCEL_Z_L = check_memory;
+	snprintf(UART, UART_BUFF_SIZE, "Z (Low) Value is 0x%02X\n", ACCEL_Z_L);
+//	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+
+	/* Shift upper << 8; | operation to combine lower */
+	uint16_t rawACCEL_Z2 = (ACCEL_Z_H << 8) | ACCEL_Z_L;
+	snprintf(UART, UART_BUFF_SIZE, "Raw Z Value is: %" PRId16 "\n", rawACCEL_Z2);
+	//Signed 16-bit specifier
+	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
+	//Prints +/-
+
+	float X_SFT = ((rawACCEL_X2 - rawACCEL_X1) - FT.Xa)/FT.Xa + 1;
+	float Y_SFT = ((rawACCEL_Y2 - rawACCEL_Y1) - FT.Ya)/FT.Ya + 1;
+	float Z_SFT = ((rawACCEL_Z2 - rawACCEL_Z1) - FT.Za)/FT.Za + 1;
+	//(SML value – LRG Trim) / LRG Trim = Negative
+
+	snprintf(UART, UART_BUFF_SIZE, "X Self-Test = %f\nY Self-Test = %f\nZ Self-Test = %f\n", X_SFT, Y_SFT, Z_SFT);
 	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
 
 

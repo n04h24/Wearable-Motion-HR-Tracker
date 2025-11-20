@@ -17,11 +17,23 @@
 /* Externs */
 extern uint8_t check_memory;
 
+typedef struct  {
+
+	float Xa;
+	float Ya;
+	float Za;
+
+} FactoryTrims;
+
+extern FactoryTrims FT;
+
 /* Function Declarations */
 void config_I2Cmem(uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size);
 
 void calc_FTa();
 
 void check_accel();
+
+void startSFT();
 
 #endif // MPU6050_CONF_H
