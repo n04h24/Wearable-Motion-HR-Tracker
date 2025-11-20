@@ -339,9 +339,7 @@ void startSFT() {
 
 }
 
-void accel_calibration(struct Offsets *acceleration_offs) {
-
-	//Retrieve ~100 samples
+void accel_calibration(Offsets *acceleration_offs) {
 
 	float sum_ACCEL_X = 0;
 	float sum_ACCEL_Y = 0;
@@ -404,5 +402,6 @@ void accel_calibration(struct Offsets *acceleration_offs) {
 	acceleration_offs->y = sum_ACCEL_Y / 100;
 	acceleration_offs->z = sum_ACCEL_Z / 100;
 
+	//Retrieve ~100 samples
 
 }

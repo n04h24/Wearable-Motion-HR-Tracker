@@ -58,6 +58,6 @@ void check_accel();
 
 void startSFT();
 
-void accel_calibration(struct Offsets *acceleration);
+void accel_calibration(Offsets *acceleration);
 
 #endif // MPU6050_CONF_H
