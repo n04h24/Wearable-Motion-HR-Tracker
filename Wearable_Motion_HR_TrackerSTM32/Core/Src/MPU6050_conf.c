@@ -12,8 +12,7 @@
 /* External variables */
 uint8_t check_memory;
 
-FactoryTrims FT;
-
+Output FT;
 Output Offsets;
 
 uint8_t ACCEL_X_H;
@@ -75,14 +74,10 @@ void calculate_FACT() {
 	}
 
 	/* Equate in FactoryTrims struct */
-	FT.Xa = 4096 * 0.34 * pow(0.92, exp(XA_TEST))/0.34;
-	FT.Ya = 4096 * 0.34 * pow(0.92, exp(YA_TEST))/0.34;
-	FT.Za = 4096 * 0.34 * pow(0.92, exp(ZA_TEST))/0.34;
+	FT.X = 4096 * 0.34 * pow(0.92, exp(XA_TEST))/0.34;
+	FT.Y = 4096 * 0.34 * pow(0.92, exp(YA_TEST))/0.34;
+	FT.Z = 4096 * 0.34 * pow(0.92, exp(ZA_TEST))/0.34;
 
-	snprintf(UART, UART_BUFF_SIZE, "Factory Trims are:\n FT_Xa is %f\nFT_Ya is %f\nFT_Za is %f\n", FT.Xa, FT.Ya, FT.Za);
-	HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen((char*)UART), 100);
-
-}
 
 void test_RESPONSE() {
 
@@ -92,7 +87,7 @@ void test_RESPONSE() {
 	int16_t raw_Z1 = 0;
 
 	/* Read + append (2) 8-bit ACCEL_OUT registers */
-	readA_CONCAT(raw_X1,raw_Y1,raw_Z1);
+	readA_CONCAT(&raw_X1, &raw_Y1, &raw_Z1);
 
 	/* Triggers SFT; ±8g for XYZ */
 	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
@@ -103,13 +98,13 @@ void test_RESPONSE() {
 	int16_t raw_Z2 = 0;
 
 	/* Read + append (2) 8-bit ACCEL_OUT registers */
-	readA_CONCAT(raw_X2,raw_Y2,raw_Z2);
+	readA_CONCAT(&raw_X2, &raw_Y2, &raw_Z2);
 
 	/* Change% Equation */
-	float X_SFT = ((raw_X2 - raw_X1) - FT.Xa)/FT.Xa + 1;
-	float Y_SFT = ((raw_Y2 - raw_Y1) - FT.Ya)/FT.Ya + 1;
-	float Z_SFT = ((raw_Z2 - raw_Z1) - FT.Za)/FT.Za + 1;
-	//(SML value – LRG Trim) / LRG Trim = Negative
+	float X_SFT = ((raw_X2 - raw_X1) - FT.X)/FT.X + 1;
+	float Y_SFT = ((raw_Y2 - raw_Y1) - FT.Y)/FT.Y + 1;
+	float Z_SFT = ((raw_Z2 - raw_Z1) - FT.Z)/FT.Z + 1;
+	//(+1) adjusts negative value / reveals percentage (%)
 
 	/* Fail output */
 	if ((X_SFT > 0.15) && (X_SFT < -0.15)){
@@ -124,7 +119,7 @@ void test_RESPONSE() {
 
 }
 
-void readA_CONCAT(int16_t raw_X, int16_t raw_Y, int16_t raw_Z) {
+void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 
 	/* Retrieve upper-X value */
 	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
@@ -135,7 +130,7 @@ void readA_CONCAT(int16_t raw_X, int16_t raw_Y, int16_t raw_Z) {
 	ACCEL_X_L = check_memory;
 
 	/* Shift upper << 8; | operation to combine lower */
-	raw_X = (ACCEL_X_H << 8) | ACCEL_X_L;
+	*raw_X = (ACCEL_X_H << 8) | ACCEL_X_L;
 
 	/* Retrieve upper-Y value */
 	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
@@ -146,7 +141,7 @@ void readA_CONCAT(int16_t raw_X, int16_t raw_Y, int16_t raw_Z) {
 	ACCEL_Y_L = check_memory;
 
 	/* Shift upper << 8; | operation to combine lower */
-	raw_Y = (ACCEL_Y_H << 8) | ACCEL_Y_L;
+	*raw_Y = (ACCEL_Y_H << 8) | ACCEL_Y_L;
 
 	/* Retrieve upper-Z value */
 	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
@@ -157,7 +152,7 @@ void readA_CONCAT(int16_t raw_X, int16_t raw_Y, int16_t raw_Z) {
 	ACCEL_Z_L = check_memory;
 
 	/* Shift upper << 8; | operation to combine lower */
-	raw_Z = (ACCEL_Z_H << 8) | ACCEL_Z_L;
+	*raw_Z = (ACCEL_Z_H << 8) | ACCEL_Z_L;
 
 }
 
@@ -179,7 +174,7 @@ void calculate_OFFS() {
 		int16_t sample_Y = 0;
 		int16_t sample_Z = 0;
 
-		readA_CONCAT(sample_X, sample_Y, sample_Z);
+		readA_CONCAT(&sample_X, &sample_Y, &sample_Z);
 
 		/* Convert acceleration to m/s^2 */
 		float conv_X = (float) sample_X / 4096;
@@ -205,6 +200,7 @@ void calibrate_ACCEL() {
 	2.	Read/Store Upper & Lower: set (expand)
 	3.	Concatenate: set
 	4.	Convert (float): set
+
 	5.	Apply offset
 	6.	Return */
 
@@ -214,7 +210,7 @@ void calibrate_ACCEL() {
 	int16_t raw_Z = 0;
 
 	/* Retrieval and concatenation (int16_t) */
-	readA_CONCAT(raw_X, raw_Y, raw_Z);
+	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
 	/* Conversion (float) */
 	float conversionX = (float) raw_X / 4096;
@@ -233,7 +229,7 @@ void MPU6050_init() {
 	/* Wake device */
 	config_I2Cmem(MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
-	/* Retrive factory trims */
+	/* Retrieve factory trims */
 	calculate_FACT();
 
 	/* Determine pass/fail */
@@ -241,5 +237,8 @@ void MPU6050_init() {
 
 	/* Sample to 79; 100x a second */
 	config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
+
+	/* Output "starting" calibrated acceleration */
+	calibrate_ACCEL();
 
 }

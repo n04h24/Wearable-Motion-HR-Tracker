@@ -16,18 +16,8 @@
 
 /* Externs */
 extern uint8_t check_memory;
-
-typedef struct  {
-
-	float Xa;
-	float Ya;
-	float Za;
-
-} FactoryTrims;
-
-extern FactoryTrims FT;
-
 extern Output Offsets;
+extern Output FT;
 
 extern uint8_t ACCEL_X_H;
 extern uint8_t ACCEL_X_L;
@@ -43,7 +33,7 @@ void calculate_FACT();
 
 void test_RESPONSE();
 
-void readA_CONCAT(int16_t raw_X, int16_t raw_Y, int16_t raw_Z);
+void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z);
 
 void calculate_OFFS();
 
