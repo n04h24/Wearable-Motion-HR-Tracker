@@ -78,6 +78,7 @@ void calculate_FACT() {
 	FT.Y = 4096 * 0.34 * pow(0.92, exp(YA_TEST))/0.34;
 	FT.Z = 4096 * 0.34 * pow(0.92, exp(ZA_TEST))/0.34;
 
+}
 
 void test_RESPONSE() {
 
@@ -177,14 +178,14 @@ void calculate_OFFS() {
 		readA_CONCAT(&sample_X, &sample_Y, &sample_Z);
 
 		/* Convert acceleration to m/s^2 */
-		float conv_X = (float) sample_X / 4096;
-		float conv_Y= (float) sample_Y / 4096;
-		float conv_Z = (float) sample_Z / 4096;
+		float convertX = ((float) sample_X / 4096) * GRAVITY;
+		float convertY = ((float) sample_Y / 4096) * GRAVITY;
+		float convertZ = ((float) sample_Z / 4096) * GRAVITY;
 
 		/* Sum samples */
-		sum_X =+ conv_X;
-		sum_Y =+ conv_Y;
-		sum_Z =+ conv_Z;
+		sum_X += convertX;
+		sum_Y += convertY;
+		sum_Z += convertZ;
 	}
 
 	/* Calculate offset */
@@ -213,9 +214,9 @@ void calibrate_ACCEL() {
 	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
 	/* Conversion (float) */
-	float conversionX = (float) raw_X / 4096;
-	float conversionY= (float) raw_Y / 4096;
-	float conversionZ = (float) raw_Z / 4096;
+	float conversionX = ((float) raw_X / 4096) * GRAVITY;
+	float conversionY= ((float) raw_Y / 4096) * GRAVITY;
+	float conversionZ = ((float) raw_Z / 4096) * GRAVITY;
 
 	/* Calibration (Offset) */
 	Acceleration.X = conversionX - Offsets.X;
@@ -231,6 +232,9 @@ void MPU6050_init() {
 
 	/* Retrieve factory trims */
 	calculate_FACT();
+
+	/* Determine & store offsets */
+	calculate_OFFS();
 
 	/* Determine pass/fail */
 	test_RESPONSE();

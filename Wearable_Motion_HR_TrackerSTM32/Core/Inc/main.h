@@ -65,7 +65,7 @@ extern Output Acceleration;
 #define ACCEL_CONFIG 0x1C
 #define PWR_MGMT_1 0x6B
 #define SMPLRT_DIV 0x19
-
+#define GRAVITY 9.80665
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
