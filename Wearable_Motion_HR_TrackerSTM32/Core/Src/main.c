@@ -46,6 +46,8 @@ UART_HandleTypeDef huart2; // EXTERNAL
 
 char UART[UART_BUFF_SIZE]; // EXTERNAL
 
+Output Acceleration;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -98,23 +100,7 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
-
-  config_I2Cmem(MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
-  //Wakes device
-
-  calc_FTa();
-  //Reads and concatenates 5-bit Factory Trims
-
-  startSFT();
-  //Reads and concatenates 5-bit Factory Trims
-
-  config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
-  //SMPLRT_DIV: 79 (100-times/second)
-
-  snprintf(UART, sizeof(UART), "\n");
-  //newline
-  HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
-  //" "
+  MPU6050_init();
 
   /* USER CODE END 2 */
 

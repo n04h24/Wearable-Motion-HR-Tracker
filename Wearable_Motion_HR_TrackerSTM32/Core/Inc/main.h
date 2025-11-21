@@ -43,6 +43,15 @@ extern UART_HandleTypeDef huart2;
 
 #define UART_BUFF_SIZE 128
 extern char UART[UART_BUFF_SIZE];
+
+typedef struct {
+	float X;
+	float Y;
+	float Z;
+} Output;
+
+extern Output Acceleration;
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

@@ -16,7 +16,6 @@
 
 /* Externs */
 extern uint8_t check_memory;
-//Universal register value buffer
 
 typedef struct  {
 
@@ -25,21 +24,10 @@ typedef struct  {
 	float Za;
 
 } FactoryTrims;
-//Store internal characteristics
+
 extern FactoryTrims FT;
-//Initialise as 'FT'
 
-
-typedef struct {
-
-	float x;
-	float y;
-	float z;
-
-} Offsets;
-//Store offsets from calibration routine
-extern Offsets acceleration_offs;
-//Initialise as 'acceleration'
+extern Output Offsets;
 
 extern uint8_t ACCEL_X_H;
 extern uint8_t ACCEL_X_L;
@@ -47,17 +35,20 @@ extern uint8_t ACCEL_Y_H;
 extern uint8_t ACCEL_Y_L;
 extern uint8_t ACCEL_Z_H;
 extern uint8_t ACCEL_Z_L;
-//Temporary high & low 8-bit storage
 
 /* Function Declarations */
 void config_I2Cmem(uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size);
 
-void calc_FTa();
+void calculate_FACT();
 
-void check_accel();
+void test_RESPONSE();
 
-void startSFT();
+void readA_CONCAT(int16_t raw_X, int16_t raw_Y, int16_t raw_Z);
 
-void accel_calibration(Offsets *acceleration);
+void calculate_OFFS();
+
+void calibrate_ACCEL();
+
+void MPU6050_init();
 
 #endif // MPU6050_CONF_H
