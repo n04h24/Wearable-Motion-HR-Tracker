@@ -160,9 +160,9 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 void calculate_OFFS() {
 
 	/* Initialise sum of XYZ */
-	float sum_X = 0;
-	float sum_Y = 0;
-	float sum_Z = 0;
+	double sum_X = 0;
+	double sum_Y = 0;
+	double sum_Z = 0;
 
 	/* Sample n times */
 	uint8_t n = 100;
@@ -178,9 +178,9 @@ void calculate_OFFS() {
 		readA_CONCAT(&sample_X, &sample_Y, &sample_Z);
 
 		/* Convert acceleration to m/s^2 */
-		float convertX = ((float) sample_X / 4096) * GRAVITY;
-		float convertY = ((float) sample_Y / 4096) * GRAVITY;
-		float convertZ = ((float) sample_Z / 4096) * GRAVITY;
+		double convertX = ((double) (sample_X / (int16_t) 4096)) * GRAVITY;
+		double convertY = ((double) (sample_Y / (int16_t) 4096)) * GRAVITY;
+		double convertZ = ((double) (sample_Z / (int16_t) 4096)) * GRAVITY;
 
 		/* Sum samples */
 		sum_X += convertX;

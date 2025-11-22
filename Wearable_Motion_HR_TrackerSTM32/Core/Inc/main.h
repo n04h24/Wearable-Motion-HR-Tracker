@@ -45,9 +45,9 @@ extern UART_HandleTypeDef huart2;
 extern char UART[UART_BUFF_SIZE];
 
 typedef struct {
-	float X;
-	float Y;
-	float Z;
+	double X;
+	double Y;
+	double Z;
 } Output;
 
 extern Output Acceleration;
