@@ -191,7 +191,7 @@ void calculate_OFFS() {
 	/* Calculate offset */
 	Offsets.X = sum_X / n;
 	Offsets.Y = sum_Y / n;
-	Offsets.Z = sum_Z / n;
+	Offsets.Z = GRAVITY - (sum_Z / n);
 
 }
 
@@ -201,7 +201,6 @@ void calibrate_ACCEL() {
 	2.	Read/Store Upper & Lower: set (expand)
 	3.	Concatenate: set
 	4.	Convert (float): set
-
 	5.	Apply offset
 	6.	Return */
 
@@ -214,9 +213,9 @@ void calibrate_ACCEL() {
 	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
 	/* Conversion (float) */
-	float conversionX = ((float) raw_X / 4096) * GRAVITY;
-	float conversionY= ((float) raw_Y / 4096) * GRAVITY;
-	float conversionZ = ((float) raw_Z / 4096) * GRAVITY;
+	double conversionX = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
+	double conversionY = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
+	double conversionZ = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
 
 	/* Calibration (Offset) */
 	Acceleration.X = conversionX - Offsets.X;
@@ -242,7 +241,7 @@ void MPU6050_init() {
 	/* Sample to 79; 100x a second */
 	config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
 
-	/* Output "starting" calibrated acceleration */
+	/* Output (x1) calibrated acceleration */
 	calibrate_ACCEL();
 
 }
