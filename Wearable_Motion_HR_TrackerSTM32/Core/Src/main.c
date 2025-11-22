@@ -18,8 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <stdio.h>
-#include <string.h>
+#include "MPU6050_conf.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -45,9 +44,13 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c1; // EXTERNAL
 
-UART_HandleTypeDef huart2;
+UART_HandleTypeDef huart2; // EXTERNAL
+
+char UART[UART_BUFF_SIZE]; // EXTERNAL
+
+Output Acceleration;
 
 /* USER CODE BEGIN PV */
 
@@ -82,7 +85,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+ HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -101,112 +104,14 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
-
-  	  // UART Initialisation
-
-  //Checking Refactor
-  char buffer[32];
-  // Creating buffer of size 16 (bytes)
-  const char messageA[] = "UART connection OK!\n";
-  // Immutable string of <16 char including \0
-
-  strcpy(buffer, messageA);
-  //Copy into source, char
-
-  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-  //Confirm UART is OK
-
-  	  //MPU6050 I2C Connection
-
-
-  HAL_StatusTypeDef status = HAL_I2C_IsDeviceReady(&hi2c1, MPU6050 << 1, 1, 100);
-  //Retrieve status of HAL function
-
-  if (status == HAL_OK) {
-	  strcpy(buffer, "MPU6050 connected\n");
-	  //Copy success message to buffer;
-	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-
-  }
-  else {
-	  strcpy(buffer, "MPU6050 failed to connect...\n");
-	  //Copy error message to buffer;
-	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-	  //Transmit over UART
-  }
-
-  	  //MPU6050 I2C Configuration
-
-
-  uint8_t write_memory = 0x00;
-  //Set all bits to 0
-  uint8_t read_memory;
-  status = HAL_I2C_Mem_Write(&hi2c1, MPU6050 << 1, PWR_MGMT_1, I2C_MEMADD_SIZE_8BIT, &write_memory, 1, 100);
-  //Wake device
-
-  if (status == HAL_OK) {
-	  strcpy(buffer, "Waking device...\n");
-	  //Success message (PWR_MGMT_1)
-	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-	  //Transmit over UART
-	  status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, PWR_MGMT_1, I2C_MEMADD_SIZE_8BIT, &read_memory, 1, 100);
-	  	  //Read memory and store in 'address of' 8-bit variable
-	  snprintf(buffer, sizeof(buffer), "PWR_MGMT_1 = 0x%02X\n", read_memory);
-		  //Copy a formatted string containing hex value of config_mem (stored I2C memory read)
-	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-
-  }
-  else {
-	  strcpy(buffer, "Cannot wake device.\n");
-	  //Error message (PWR_MGMT_1)
-	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-	  //Transmit over UART
-  }
-
-
-  write_memory = 0xF0;
-  //Set to 0b11110000
-
-  snprintf(buffer, sizeof(buffer), "Unpacking %s...\n", VAR_NAME(ACCEL_CONFIG));
-
-  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-
-  status = HAL_I2C_Mem_Write(&hi2c1, MPU6050 << 1, ACCEL_CONFIG, I2C_MEMADD_SIZE_8BIT, &write_memory, 1, 100);
-  //Configure XYZ accelerometer self-test (±8g recommended range)
-
-  if (status == HAL_OK) {
-	  strcpy(buffer, "Self-testing accelerometer...\n");
-	  //Copy success message to buffer;
-	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-	  //Transmit over UART
-
-	  status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_CONFIG, I2C_MEMADD_SIZE_8BIT, &read_memory, 1, 100);
-	  //Read memory and store in 'address of' 8-bit variable
-	  if (status == HAL_OK){
-		  snprintf(buffer, sizeof(buffer), "ACCEL_CONFIG = 0x%02X\n", read_memory);
-		  	  //Copy a formatted string containing hex value of config_mem (stored I2C memory read)
-		  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-		  //Compare current memory hex to intended 0xF0
-	  }
-	  else {
-		  strcpy(buffer, "Cannot read self-test memory\n");
-		  //Copy failed to read message
-		  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-		 //Transmit over UART
-	  }
-
-  }
-  else {
-	  strcpy(buffer, "Cannot self-test accelerometer\n");
-	  //Copy error message to buffer
-	  HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen((char*)buffer), HAL_MAX_DELAY);
-	  //Transmit over UART
-  }
+  MPU6050_init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
+
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
 

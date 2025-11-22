@@ -28,7 +28,8 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g0xx_hal.h"
-
+#include <stdio.h>
+#include <string.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -36,6 +37,20 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+extern I2C_HandleTypeDef hi2c1;
+
+extern UART_HandleTypeDef huart2;
+
+#define UART_BUFF_SIZE 128
+extern char UART[UART_BUFF_SIZE];
+
+typedef struct {
+	double X;
+	double Y;
+	double Z;
+} Output;
+
+extern Output Acceleration;
 
 /* USER CODE END ET */
 
@@ -46,7 +61,11 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+#define MPU6050 0x68
+#define ACCEL_CONFIG 0x1C
+#define PWR_MGMT_1 0x6B
+#define SMPLRT_DIV 0x19
+#define GRAVITY 9.80665
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
