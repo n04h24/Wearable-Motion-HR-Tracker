@@ -196,7 +196,7 @@ void calculate_OFFS() {
 
 }
 
-void calibrate_ACCEL() {
+void convert_ACCEL(int i) {
 
 	/*1.  (Interrupt/Poll) –> Call function
 	2.	Read/Store Upper & Lower: set (expand)
@@ -213,16 +213,24 @@ void calibrate_ACCEL() {
 	/* Retrieval and concatenation (int16_t) */
 	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
-	/* Conversion (float) */
-	Calibration.X = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
-	Calibration.Y = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
-	Calibration.Z = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
+	/* Convert */
+	double conversionX = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
+	double conversionY = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
+	double conversionZ = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
 
-	/* Calibration (Offset)
-	Acceleration.X = conversionX - Offsets.X;
-	Acceleration.Y = conversionY - Offsets.Y;
-	Acceleration.Z = conversionZ - Offsets.Z;
-	*/
+	if (i == 0) {
+		/* Initial Calibration of Acceleration (Offset) */
+		Calibration.X = conversionX - Offsets.X;
+		Calibration.Y = conversionY - Offsets.Y;
+		Calibration.Z = conversionZ - Offsets.Z;
+	}
+
+	else if (i == 1) {
+		/* Converted Acceleration (double) */
+		Acceleration.X = conversionX;
+		Acceleration.Y = conversionY;
+		Acceleration.Z = conversionZ;
+	}
 
 }
 
@@ -244,6 +252,6 @@ void MPU6050_init() {
 	config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* Output (x1) calibrated acceleration */
-	calibrate_ACCEL();
+	convert_ACCEL(0);
 
 }

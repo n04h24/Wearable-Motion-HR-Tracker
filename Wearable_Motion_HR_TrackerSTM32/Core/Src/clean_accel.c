@@ -9,24 +9,45 @@
 
 /* Receive (Calibrated) Acceleration on Polling or IT */
 
-void high_pass_ACCEL(int num_samples){
+void high_pass_ACCEL(){
 
+	/* 1 / f(s)*2*3.14 */
 	float RC = 1.0/(CUTOFF*2*M_PI);
-	//#define CUTOFF
+	/* 1 / SAMPLE_RATE */
 	float dt = 1.0 / 80;
-	//Confirm SMPLRT_DIV
+	/* Coefficient */
 	float alpha = RC/(RC + dt);
-	//Coefficient
-	MPU6050_Accelerometer Sampling[num_samples];
+	/* IIR & Sampling ARRAY storage */
+	MPU6050_Accelerometer IIR[NUM_SAMPLES];
+	MPU6050_Accelerometer Sampling[NUM_SAMPLES];
 
-	Sampling[0].X = 0;
-	Sampling[0].Y = 0;
-	Sampling[0].Z = 0;
-	//Initial condition
+	/* Initial condition (equation) */
+	IIR[0].X = 0;
+	IIR[0].Y = 0;
+	IIR[0].Z = 0;
+	/* Retrieve 1st Sample (i-1) */
+	convert_ACCEL(1);
+	/* Store (i-1) */
+	Sampling[0].X = Acceleration.X;
+	Sampling[0].Y = Acceleration.Y;
+	Sampling[0].Z = Acceleration.Z;
 
-	for (int i = 1; i < num_samples; i++){
-//		Acceleration_IIR[i] = alpha * (Acceleration_IIR[i-1] + data.recordedSamples[i] - data.recordedSamples[i-1]);
-		//y[i] = alpha * (y[i-1] + x[i] - x[i-1])
+
+	for (int i = 1; i < NUM_SAMPLES; i++){
+
+		/* Retrieve current XYZ */
+		convert_ACCEL(1);
+
+		/* Store (iteratively) */
+		Sampling[i].X = Acceleration.X;
+		Sampling[i].Y = Acceleration.Y;
+		Sampling[i].Z = Acceleration.Z;
+
+		/* IIR equation (recursive relation) */
+		IIR[i].X = alpha * (IIR[i-1] + Sampling[i].X - Sampling[i-1].X);
+		IIR[i].Y = alpha * (IIR[i-1] + Sampling[i].Y - Sampling[i-1].Y);
+		IIR[i].Z = alpha * (IIR[i-1] + Sampling[i].Z - Sampling[i-1].Z);
+
 	}
 }
 

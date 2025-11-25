@@ -38,7 +38,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z);
 
 void calculate_OFFS();
 
-void calibrate_ACCEL();
+void convert_ACCEL(int i);
 
 void MPU6050_init();
 

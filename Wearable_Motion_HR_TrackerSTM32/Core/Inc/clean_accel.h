@@ -10,11 +10,12 @@
 
 /* Includes */
 #include "main.h"
+#include "MPU6050_conf.h"
 #include <math.h>
 
 /* Defines */
 #define CUTOFF 1
-
+#define NUM_SAMPLES 10
 /* Externs */
 
 /* Function Declarations */
