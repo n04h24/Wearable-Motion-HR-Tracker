@@ -38,7 +38,6 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 extern I2C_HandleTypeDef hi2c1;
-
 extern UART_HandleTypeDef huart2;
 
 #define UART_BUFF_SIZE 128

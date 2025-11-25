@@ -213,14 +213,15 @@ void calibrate_ACCEL() {
 	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
 	/* Conversion (float) */
-	double conversionX = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
-	double conversionY = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
-	double conversionZ = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
+	Acceleration.X = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
+	Acceleration.Y = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
+	Acceleration.Z = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
 
-	/* Calibration (Offset) */
+	/* Calibration (Offset)
 	Acceleration.X = conversionX - Offsets.X;
 	Acceleration.Y = conversionY - Offsets.Y;
 	Acceleration.Z = conversionZ - Offsets.Z;
+	*/
 
 }
 
@@ -232,7 +233,7 @@ void MPU6050_init() {
 	/* Retrieve factory trims */
 	calculate_FACT();
 
-	/* Determine & store offsets */
+	/* Determine & store offsets: Sensor drift */
 	calculate_OFFS();
 
 	/* Determine pass/fail */
