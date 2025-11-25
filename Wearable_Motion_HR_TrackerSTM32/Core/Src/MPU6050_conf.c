@@ -12,8 +12,9 @@
 /* External variables */
 uint8_t check_memory;
 
-Output FT;
-Output Offsets;
+MPU6050_Accelerometer FT;
+MPU6050_Accelerometer Offsets;
+MPU6050_Accelerometer Calibration;
 
 uint8_t ACCEL_X_H;
 uint8_t ACCEL_X_L;
@@ -213,9 +214,9 @@ void calibrate_ACCEL() {
 	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
 	/* Conversion (float) */
-	Acceleration.X = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
-	Acceleration.Y = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
-	Acceleration.Z = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
+	Calibration.X = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
+	Calibration.Y = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
+	Calibration.Z = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
 
 	/* Calibration (Offset)
 	Acceleration.X = conversionX - Offsets.X;

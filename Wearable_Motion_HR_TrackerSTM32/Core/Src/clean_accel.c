@@ -17,11 +17,11 @@ void high_pass_ACCEL(int num_samples){
 	//Confirm SMPLRT_DIV
 	float alpha = RC/(RC + dt);
 	//Coefficient
-	Output Acceleration_IIR[num_samples];
+	MPU6050_Accelerometer Sampling[num_samples];
 
-	Acceleration_IIR[0].X = 0;
-	Acceleration_IIR[0].Y = 0;
-	Acceleration_IIR[0].Z = 0;
+	Sampling[0].X = 0;
+	Sampling[0].Y = 0;
+	Sampling[0].Z = 0;
 	//Initial condition
 
 	for (int i = 1; i < num_samples; i++){

@@ -16,8 +16,9 @@
 
 /* Externs */
 extern uint8_t check_memory;
-extern Output Offsets;
-extern Output FT;
+extern MPU6050_Accelerometer Offsets;
+extern MPU6050_Accelerometer FT;
+extern MPU6050_Accelerometer Calibration;
 
 extern uint8_t ACCEL_X_H;
 extern uint8_t ACCEL_X_L;

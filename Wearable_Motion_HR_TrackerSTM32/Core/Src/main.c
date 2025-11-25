@@ -50,7 +50,7 @@ UART_HandleTypeDef huart2; // EXTERNAL
 
 char UART[UART_BUFF_SIZE]; // EXTERNAL
 
-Output Acceleration;
+MPU6050_Accelerometer Acceleration;
 
 /* USER CODE BEGIN PV */
 

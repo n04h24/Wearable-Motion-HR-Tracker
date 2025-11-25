@@ -49,9 +49,9 @@ typedef struct {
 	double X;
 	double Y;
 	double Z;
-} Output;
+} MPU6050_Accelerometer;
 
-extern Output Acceleration;
+extern MPU6050_Accelerometer Acceleration;
 
 /* USER CODE END ET */
 
