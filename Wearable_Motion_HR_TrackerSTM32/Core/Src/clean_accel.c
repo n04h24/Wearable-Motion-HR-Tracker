@@ -47,7 +47,7 @@ void filter_ACCEL(){
 		IIR[i].Y = alpha * (IIR[i-1].Y + Sampling[i].Y - Sampling[i-1].Y);
 		IIR[i].Z = alpha * (IIR[i-1].Z + Sampling[i].Z - Sampling[i-1].Z);
 
-		/* Store in 'Sampling' for processing */
+		/* Store filtered data in 'Sampling' for processing */
 		Sampling->X = IIR->X;
 		Sampling->Y = IIR->Y;
 		Sampling->Z = IIR->Z;
