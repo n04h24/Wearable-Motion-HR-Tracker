@@ -36,10 +36,6 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define MPU6050 0x68
-#define ACCEL_CONFIG 0x1C
-#define PWR_MGMT_1 0x6B
-#define VAR_NAME(var) #var
 
 /* USER CODE END PM */
 
@@ -51,6 +47,7 @@ UART_HandleTypeDef huart2; // EXTERNAL
 char UART[UART_BUFF_SIZE]; // EXTERNAL
 
 MPU6050_Accelerometer Acceleration;
+MPU6050_Accelerometer Sampling[NUM_SAMPLES];
 
 /* USER CODE BEGIN PV */
 

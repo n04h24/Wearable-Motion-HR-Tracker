@@ -9,7 +9,7 @@
 
 /* Receive (Calibrated) Acceleration on Polling or IT */
 
-void high_pass_ACCEL(){
+void filter_ACCEL(){
 
 	/* 1 / f(s)*2*3.14 */
 	float RC = 1.0/(CUTOFF*2*M_PI);
@@ -19,7 +19,6 @@ void high_pass_ACCEL(){
 	float alpha = RC/(RC + dt);
 	/* IIR & Sampling ARRAY storage */
 	MPU6050_Accelerometer IIR[NUM_SAMPLES];
-	MPU6050_Accelerometer Sampling[NUM_SAMPLES];
 
 	/* Initial condition (equation) */
 	IIR[0].X = 0;
@@ -43,11 +42,15 @@ void high_pass_ACCEL(){
 		Sampling[i].Y = Acceleration.Y;
 		Sampling[i].Z = Acceleration.Z;
 
-		/* IIR equation (recursive relation) */
-		IIR[i].X = alpha * (IIR[i-1] + Sampling[i].X - Sampling[i-1].X);
-		IIR[i].Y = alpha * (IIR[i-1] + Sampling[i].Y - Sampling[i-1].Y);
-		IIR[i].Z = alpha * (IIR[i-1] + Sampling[i].Z - Sampling[i-1].Z);
+//		/* IIR equation (recursive relation) */
+		IIR[i].X = alpha * (IIR[i-1].X + Sampling[i].X - Sampling[i-1].X);
+		IIR[i].Y = alpha * (IIR[i-1].Y + Sampling[i].Y - Sampling[i-1].Y);
+		IIR[i].Z = alpha * (IIR[i-1].Z + Sampling[i].Z - Sampling[i-1].Z);
 
+		/* Store in 'Sampling' for processing */
+		Sampling->X = IIR->X;
+		Sampling->Y = IIR->Y;
+		Sampling->Z = IIR->Z;
 	}
 }
 

@@ -15,10 +15,10 @@
 
 /* Defines */
 #define CUTOFF 1
-#define NUM_SAMPLES 10
+
 /* Externs */
 
 /* Function Declarations */
-void high_pass_ACCEL();
+void filter_ACCEL();
 
 #endif /* INC_CLEAN_ACCEL_H_ */
