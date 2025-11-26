@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "MPU6050_conf.h"
+#include "clean_accel.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -103,6 +104,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   MPU6050_init();
 
+  filter_ACCEL();
   /* USER CODE END 2 */
 
   /* Infinite loop */
