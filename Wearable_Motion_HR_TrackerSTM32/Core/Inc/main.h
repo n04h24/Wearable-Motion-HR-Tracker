@@ -46,7 +46,7 @@ extern "C" {
 #define SMPLRT_DIV 0x19
 #define GRAVITY 9.80665
 #define UART_BUFF_SIZE 128
-#define NUM_SAMPLES 20
+#define NUM_SAMPLES 200
 
 extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart2;
