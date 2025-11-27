@@ -87,10 +87,10 @@ void test_RESPONSE() {
 	int16_t raw_Y1 = 0;
 	int16_t raw_Z1 = 0;
 
-	/* Read + append (2) 8-bit ACCEL_OUT registers */
+	/* Read & append (2) 8-bit registers >> int16_t */
 	readA_CONCAT(&raw_X1, &raw_Y1, &raw_Z1);
 
-	/* Triggers SFT; ±8g for XYZ */
+	/* Triggers SFT >> ±8g Sensitivity for XYZ */
 	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* After Self-Test */
@@ -98,7 +98,7 @@ void test_RESPONSE() {
 	int16_t raw_Y2 = 0;
 	int16_t raw_Z2 = 0;
 
-	/* Read + append (2) 8-bit ACCEL_OUT registers */
+	/* Repeat read & append */
 	readA_CONCAT(&raw_X2, &raw_Y2, &raw_Z2);
 
 	/* Change% Equation */
@@ -131,7 +131,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	ACCEL_X_L = check_memory;
 
 	/* Shift upper << 8; | operation to combine lower */
-	*raw_X = (ACCEL_X_H << 8) | ACCEL_X_L;
+	*raw_X = (int16_t)(((uint16_t)ACCEL_X_H << 8) | ACCEL_X_L);
 
 	/* Retrieve upper-Y value */
 	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
@@ -142,7 +142,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	ACCEL_Y_L = check_memory;
 
 	/* Shift upper << 8; | operation to combine lower */
-	*raw_Y = (ACCEL_Y_H << 8) | ACCEL_Y_L;
+	*raw_Y = (int16_t)(((uint16_t)ACCEL_Y_H << 8) | ACCEL_Y_L);
 
 	/* Retrieve upper-Z value */
 	HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
@@ -153,7 +153,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	ACCEL_Z_L = check_memory;
 
 	/* Shift upper << 8; | operation to combine lower */
-	*raw_Z = (ACCEL_Z_H << 8) | ACCEL_Z_L;
+	*raw_Z = (int16_t)(((uint16_t)ACCEL_Z_H << 8) | ACCEL_Z_L);
 
 }
 
@@ -178,9 +178,9 @@ void calculate_OFFS() {
 		readA_CONCAT(&sample_X, &sample_Y, &sample_Z);
 
 		/* Convert acceleration to m/s^2 */
-		double convertX = ((double) (sample_X / 4096)) * GRAVITY;
-		double convertY = ((double) (sample_Y / 4096)) * GRAVITY;
-		double convertZ = ((double) (sample_Z / 4096)) * GRAVITY;
+		double convertX = ((double)sample_X / 16384.0) * GRAVITY;
+		double convertY = ((double)sample_Y / 16384.0) * GRAVITY;
+		double convertZ = ((double)sample_Z / 16384.0) * GRAVITY;
 
 		/* Sum samples */
 		sum_X += convertX;
@@ -213,9 +213,9 @@ void convert_ACCEL() {
 	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
 	/* Convert */
-	double conversionX = ((double) raw_X / 4096.0) * GRAVITY;
-	double conversionY = ((double) raw_Y / 4096.0) * GRAVITY;
-	double conversionZ = ((double) raw_Z / 4096.0) * GRAVITY;
+	double conversionX = ((double)raw_X / 16384.0) * GRAVITY;
+	double conversionY = ((double)raw_Y / 16384.0) * GRAVITY;
+	double conversionZ = ((double)raw_Z / 16384.0) * GRAVITY;
 	/* Converted (Calibrated) Acceleration (double) */
 	Acceleration.X = conversionX - Offsets.X;
 	Acceleration.Y = conversionY - Offsets.Y;
@@ -231,11 +231,14 @@ void MPU6050_init() {
 	/* Retrieve factory trims */
 	calculate_FACT();
 
-	/* Determine & store offsets: Sensor drift */
-	calculate_OFFS();
-
 	/* Determine pass/fail */
 	test_RESPONSE();
+
+	/* Changes sensitivity for application (±2g) */
+	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xE0, I2C_MEMADD_SIZE_8BIT, 1);
+
+	/* Determine & store offsets: Sensor drift */
+	calculate_OFFS();
 
 	/* Sample to 79; 100x a second */
 	config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
