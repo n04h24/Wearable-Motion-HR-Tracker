@@ -165,7 +165,7 @@ void calculate_OFFS() {
 	double sum_Z = 0;
 
 	/* Sample n times */
-	uint8_t n = 100;
+	uint16_t n = 500;
 
 	/* Retrieve & sum 'n' samples */
 	for (int i = 0; i <= n; i++){
@@ -235,7 +235,7 @@ void MPU6050_init() {
 	test_RESPONSE();
 
 	/* Changes sensitivity for application (±2g) */
-	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xE0, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* Determine & store offsets: Sensor drift */
 	calculate_OFFS();
