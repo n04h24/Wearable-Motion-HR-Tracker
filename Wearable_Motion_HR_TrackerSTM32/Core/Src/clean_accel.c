@@ -25,7 +25,7 @@ void filter_ACCEL(){
 	IIR[0].Y = 0;
 	IIR[0].Z = 0;
 	/* Retrieve 1st Sample (i-1) */
-	convert_ACCEL(1);
+	convert_ACCEL();
 	/* Store (i-1) */
 	Sampling[0].X = Acceleration.X;
 	Sampling[0].Y = Acceleration.Y;
@@ -35,7 +35,7 @@ void filter_ACCEL(){
 	for (int i = 1; i < NUM_SAMPLES; i++){
 
 		/* Retrieve current XYZ */
-		convert_ACCEL(1);
+		convert_ACCEL();
 
 		/* Store (iteratively) */
 		Sampling[i].X = Acceleration.X;

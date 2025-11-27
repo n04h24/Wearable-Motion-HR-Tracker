@@ -14,7 +14,6 @@ uint8_t check_memory;
 
 MPU6050_Accelerometer FT;
 MPU6050_Accelerometer Offsets;
-MPU6050_Accelerometer Calibration;
 
 uint8_t ACCEL_X_H;
 uint8_t ACCEL_X_L;
@@ -179,9 +178,9 @@ void calculate_OFFS() {
 		readA_CONCAT(&sample_X, &sample_Y, &sample_Z);
 
 		/* Convert acceleration to m/s^2 */
-		double convertX = ((double) (sample_X / (int16_t) 4096)) * GRAVITY;
-		double convertY = ((double) (sample_Y / (int16_t) 4096)) * GRAVITY;
-		double convertZ = ((double) (sample_Z / (int16_t) 4096)) * GRAVITY;
+		double convertX = ((double) (sample_X / 4096)) * GRAVITY;
+		double convertY = ((double) (sample_Y / 4096)) * GRAVITY;
+		double convertZ = ((double) (sample_Z / 4096)) * GRAVITY;
 
 		/* Sum samples */
 		sum_X += convertX;
@@ -196,7 +195,7 @@ void calculate_OFFS() {
 
 }
 
-void convert_ACCEL(int i) {
+void convert_ACCEL() {
 
 	/*1.  (Interrupt/Poll) –> Call function
 	2.	Read/Store Upper & Lower: set (expand)
@@ -214,23 +213,13 @@ void convert_ACCEL(int i) {
 	readA_CONCAT(&raw_X, &raw_Y, &raw_Z);
 
 	/* Convert */
-	double conversionX = ((double) (raw_X / (int16_t) 4096)) * GRAVITY;
-	double conversionY = ((double) (raw_Y / (int16_t) 4096)) * GRAVITY;
-	double conversionZ = ((double) (raw_Z / (int16_t) 4096)) * GRAVITY;
-
-	if (i == 0) {
-		/* Initial Calibration of Acceleration (Offset) */
-		Calibration.X = conversionX - Offsets.X;
-		Calibration.Y = conversionY - Offsets.Y;
-		Calibration.Z = conversionZ - Offsets.Z;
-	}
-
-	else if (i == 1) {
-		/* Converted Acceleration (double) */
-		Acceleration.X = conversionX;
-		Acceleration.Y = conversionY;
-		Acceleration.Z = conversionZ;
-	}
+	double conversionX = ((double) raw_X / 4096.0) * GRAVITY;
+	double conversionY = ((double) raw_Y / 4096.0) * GRAVITY;
+	double conversionZ = ((double) raw_Z / 4096.0) * GRAVITY;
+	/* Converted (Calibrated) Acceleration (double) */
+	Acceleration.X = conversionX - Offsets.X;
+	Acceleration.Y = conversionY - Offsets.Y;
+	Acceleration.Z = conversionZ - Offsets.Z;
 
 }
 
@@ -252,6 +241,7 @@ void MPU6050_init() {
 	config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* Output (x1) calibrated acceleration */
-	convert_ACCEL(0);
+	convert_ACCEL();
+
 
 }

@@ -18,7 +18,6 @@
 extern uint8_t check_memory;
 extern MPU6050_Accelerometer Offsets;
 extern MPU6050_Accelerometer FT;
-extern MPU6050_Accelerometer Calibration;
 
 extern uint8_t ACCEL_X_H;
 extern uint8_t ACCEL_X_L;
@@ -38,7 +37,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z);
 
 void calculate_OFFS();
 
-void convert_ACCEL(int i);
+void convert_ACCEL();
 
 void MPU6050_init();
 

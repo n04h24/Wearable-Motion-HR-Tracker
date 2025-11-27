@@ -14,7 +14,7 @@
 #include <math.h>
 
 /* Defines */
-#define CUTOFF 50 //100Hz for SMPLRT >> 50Hz for Attenuation
+#define CUTOFF 25 //100Hz for SMPLRT >> 50Hz for Attenuation
 
 /* Externs */
 
