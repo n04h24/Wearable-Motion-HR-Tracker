@@ -18,8 +18,10 @@
 
 /* Externs */
 extern MPU6050_Accelerometer Sampling[NUM_SAMPLES];
+extern double magnitude_ACCEL[NUM_SAMPLES-1];
 
 /* Function Declarations */
 void sample_HPF();
+void euclidean_NORM();
 
 #endif /* INC_CLEAN_ACCEL_H_ */

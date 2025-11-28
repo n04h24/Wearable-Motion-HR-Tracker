@@ -50,6 +50,12 @@ void sample_HPF(){
 
 	}
 
-	memcpy(Sampling, IIR, NUM_SAMPLES-1);
+	/* Copy (from 1st element) IIR into Sampling */
+	memcpy(Sampling, &IIR[1], (NUM_SAMPLES-1) * sizeof(IIR[0]));
 }
 
+void euclidean_NORM(){
+
+	//√Equation
+
+}
