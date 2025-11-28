@@ -3,7 +3,6 @@
 
 /* Includes */
 #include "main.h"
-#include <math.h>
 #include <inttypes.h>
 
 /* Defines */

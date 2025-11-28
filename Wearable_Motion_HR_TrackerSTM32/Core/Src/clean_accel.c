@@ -7,9 +7,11 @@
 
 #include "clean_accel.h"
 
-/* Receive (Calibrated) Acceleration on Polling or IT */
+MPU6050_Accelerometer Sampling[NUM_SAMPLES];
 
-void filter_ACCEL(){
+/* INTERRUPT (Sample Acceleration) */
+
+void sample_HPF(){
 
 	/* 1 / f(s)*2*3.14 */
 	float RC = 1.0/(CUTOFF*2*M_PI);
@@ -20,17 +22,16 @@ void filter_ACCEL(){
 	/* IIR & Sampling ARRAY storage */
 	MPU6050_Accelerometer IIR[NUM_SAMPLES];
 
-	/* Initial condition (equation) */
+	/* Retrieve 1st Sample (i-1) */
+	convert_ACCEL();
+	/* Initial conditions (equation) */
 	IIR[0].X = 0;
 	IIR[0].Y = 0;
 	IIR[0].Z = 0;
-	/* Retrieve 1st Sample (i-1) */
-	convert_ACCEL();
-	/* Store (i-1) */
+	/* Store 1st Sample[0] */
 	Sampling[0].X = Acceleration.X;
 	Sampling[0].Y = Acceleration.Y;
 	Sampling[0].Z = Acceleration.Z;
-
 
 	for (int i = 1; i < NUM_SAMPLES; i++){
 
@@ -42,16 +43,13 @@ void filter_ACCEL(){
 		Sampling[i].Y = Acceleration.Y;
 		Sampling[i].Z = Acceleration.Z;
 
-//		/* IIR equation (recursive relation) */
+		/* IIR equation (recursive relation) */
 		IIR[i].X = alpha * (IIR[i-1].X + Sampling[i].X - Sampling[i-1].X);
 		IIR[i].Y = alpha * (IIR[i-1].Y + Sampling[i].Y - Sampling[i-1].Y);
 		IIR[i].Z = alpha * (IIR[i-1].Z + Sampling[i].Z - Sampling[i-1].Z);
 
 	}
 
-	/* Store filtered data in 'Sampling' for processing */
-	Sampling->Z = IIR->Z;
-	Sampling->Y = IIR->Y;
-	Sampling->X = IIR->X;
+	memcpy(Sampling, IIR, NUM_SAMPLES-1);
 }
 

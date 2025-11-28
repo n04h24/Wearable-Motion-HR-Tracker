@@ -30,6 +30,7 @@ extern "C" {
 #include "stm32g0xx_hal.h"
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 //Synchronise
 
 /* Private includes ----------------------------------------------------------*/
@@ -46,7 +47,6 @@ extern "C" {
 #define SMPLRT_DIV 0x19
 #define GRAVITY 9.80665
 #define UART_BUFF_SIZE 128
-#define NUM_SAMPLES 200
 
 extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart2;
@@ -60,7 +60,7 @@ typedef struct {
 } MPU6050_Accelerometer;
 
 extern MPU6050_Accelerometer Acceleration;
-extern MPU6050_Accelerometer Sampling[NUM_SAMPLES];
+
 
 /* USER CODE END ET */
 

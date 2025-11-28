@@ -11,14 +11,15 @@
 /* Includes */
 #include "main.h"
 #include "MPU6050_conf.h"
-#include <math.h>
 
 /* Defines */
 #define CUTOFF 25 //100Hz for SMPLRT >> 50Hz for Attenuation
+#define NUM_SAMPLES 200
 
 /* Externs */
+extern MPU6050_Accelerometer Sampling[NUM_SAMPLES];
 
 /* Function Declarations */
-void filter_ACCEL();
+void sample_HPF();
 
 #endif /* INC_CLEAN_ACCEL_H_ */

@@ -48,7 +48,6 @@ UART_HandleTypeDef huart2; // EXTERNAL
 char UART[UART_BUFF_SIZE]; // EXTERNAL
 
 MPU6050_Accelerometer Acceleration;
-MPU6050_Accelerometer Sampling[NUM_SAMPLES];
 
 /* USER CODE BEGIN PV */
 
@@ -104,7 +103,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   MPU6050_init();
 
-  filter_ACCEL();
+  sample_HPF();
   /* USER CODE END 2 */
 
   /* Infinite loop */

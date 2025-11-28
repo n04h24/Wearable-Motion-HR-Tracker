@@ -165,7 +165,7 @@ void calculate_OFFS() {
 	double sum_Z = 0;
 
 	/* Sample n times */
-	uint16_t n = 500;
+	uint8_t n = 250;
 
 	/* Retrieve & sum 'n' samples */
 	for (int i = 0; i <= n; i++){
@@ -242,9 +242,5 @@ void MPU6050_init() {
 
 	/* Sample to 79; 100x a second */
 	config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
-
-	/* Output (x1) calibrated acceleration */
-	convert_ACCEL();
-
 
 }
