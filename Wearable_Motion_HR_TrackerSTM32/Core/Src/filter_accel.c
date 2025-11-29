@@ -8,6 +8,7 @@
 #include <filter_accel.h>
 
 MPU6050_Accelerometer Sampling[NUM_SAMPLES];
+double mag_ACCEL[NUM_SAMPLES-1]; //-1 ∵ Discard IIR[0] = {0,0,0}
 
 /* INTERRUPT (Sample Acceleration) */
 
@@ -62,4 +63,5 @@ void process_ACCEL() {
 	sample_HPF();
 
 	euclidean_NORMS();
+
 }
