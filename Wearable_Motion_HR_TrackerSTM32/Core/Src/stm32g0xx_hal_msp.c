@@ -23,7 +23,6 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
-extern DMA_HandleTypeDef hdma_i2c1_rx;
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
@@ -87,7 +86,6 @@ void HAL_MspInit(void)
 void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  HAL_DMA_MuxSyncConfigTypeDef pSyncConfig;
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hi2c->Instance==I2C1)
   {
@@ -118,35 +116,6 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
 
     /* Peripheral clock enable */
     __HAL_RCC_I2C1_CLK_ENABLE();
-
-    /* I2C1 DMA Init */
-    /* I2C1_RX Init */
-    hdma_i2c1_rx.Instance = DMA1_Channel1;
-    hdma_i2c1_rx.Init.Request = DMA_REQUEST_I2C1_RX;
-    hdma_i2c1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-    hdma_i2c1_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_i2c1_rx.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_i2c1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-    hdma_i2c1_rx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-    hdma_i2c1_rx.Init.Mode = DMA_NORMAL;
-    hdma_i2c1_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
-    if (HAL_DMA_Init(&hdma_i2c1_rx) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    pSyncConfig.SyncSignalID = HAL_DMAMUX1_SYNC_EXTI0;
-    pSyncConfig.SyncPolarity = HAL_DMAMUX_SYNC_NO_EVENT;
-    pSyncConfig.SyncEnable = DISABLE;
-    pSyncConfig.EventEnable = ENABLE;
-    pSyncConfig.RequestNumber = 1;
-    if (HAL_DMAEx_ConfigMuxSync(&hdma_i2c1_rx, &pSyncConfig) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    __HAL_LINKDMA(hi2c,hdmarx,hdma_i2c1_rx);
-
     /* USER CODE BEGIN I2C1_MspInit 1 */
 
     /* USER CODE END I2C1_MspInit 1 */
@@ -179,8 +148,6 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
 
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_10);
 
-    /* I2C1 DMA DeInit */
-    HAL_DMA_DeInit(hi2c->hdmarx);
     /* USER CODE BEGIN I2C1_MspDeInit 1 */
 
     /* USER CODE END I2C1_MspDeInit 1 */
