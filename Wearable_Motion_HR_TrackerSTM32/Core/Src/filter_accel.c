@@ -45,23 +45,23 @@ void sample_HPF(){
 		IIR[i].Y = alpha * (IIR[i-1].Y + Sampling[i].Y - Sampling[i-1].Y);
 		IIR[i].Z = alpha * (IIR[i-1].Z + Sampling[i].Z - Sampling[i-1].Z);
 	}
-	/* Copy (from 1st element) IIR into Sampling */
-	memcpy(Sampling, &IIR[1], (NUM_SAMPLES-1) * sizeof(IIR[0]));
+	/* Equate from Sampling[1] >> IIR[1] by NUM_SAMPLES-1 (bytes) */
+	memcpy(&Sampling[1], &IIR[1], (NUM_SAMPLES-1) * sizeof(IIR[0]));
 }
 
 void euclidean_NORMS() {
-	for (int i = 0; i < NUM_SAMPLES-1; i++) {
+
+	for (int i = 0; i < sizeof(mag_ACCEL); i++) {
 		/* magnitude^2 =  x^2 + y^2 + z^2 */
-		mag_ACCEL[i] = (pow(Sampling[i].X, 2) + pow(Sampling[i].Y, 2) + pow(Sampling[i].Z, 2));
+		mag_ACCEL[i] = (pow(Sampling[i+1].X, 2) + pow(Sampling[i+1].Y, 2) + pow(Sampling[i+1].Z, 2));
 		/* magnitude = √magnitude */
 		mag_ACCEL[i] = sqrt(mag_ACCEL[i]);
 	}
 }
 
 void process_ACCEL() {
-
+	/* Sample and compute IIR (recursive relation) */
 	sample_HPF();
-
+	/* Calculate and store magnitudes (struct) */
 	euclidean_NORMS();
-
 }
