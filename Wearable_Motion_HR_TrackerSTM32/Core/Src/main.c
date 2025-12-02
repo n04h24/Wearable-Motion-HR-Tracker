@@ -103,6 +103,7 @@ int main(void)
   MPU6050_init();
   process_ACCEL();
   HAL_TIM_Base_Start_IT(&htim2);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -326,7 +327,7 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if (htim == &htim2){
 		strcpy(UART, "10 microseconds counted");
-		HAL_UART_Transmit(&huart2, (uint8_t*)UART, 1, 100);
+		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
 	}
 }
 /* USER CODE END 4 */

@@ -51,7 +51,7 @@ void sample_HPF(){
 
 void euclidean_NORMS() {
 
-	for (int i = 0; i < sizeof(mag_ACCEL); i++) {
+	for (int i = 0; i < NUM_SAMPLES-2; i++) { // ERROR HANDLING*
 		/* magnitude^2 =  x^2 + y^2 + z^2 */
 		mag_ACCEL[i] = (pow(Sampling[i+1].X, 2) + pow(Sampling[i+1].Y, 2) + pow(Sampling[i+1].Z, 2));
 		/* magnitude = √magnitude */
