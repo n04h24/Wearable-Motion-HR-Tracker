@@ -7,61 +7,61 @@
 
 #include <filter_accel.h>
 
-MPU6050_Accelerometer Sampling[NUM_SAMPLES];
-double mag_ACCEL[NUM_SAMPLES-1]; //-1 ∵ Discard IIR[0] = {0,0,0}
+/* Global Variables */
 
 /* INTERRUPT (Sample Acceleration) */
 
-void sample_HPF(){
-
+void sample_HPF_IT() {
 	/* 1 / f(s)*2*3.14 */
 	float RC = 1.0/(CUTOFF*2*M_PI);
 	/* 1 / SAMPLE_RATE */
 	float dt = 1.0 / 80;
 	/* Coefficient */
 	float alpha = RC/(RC + dt);
-	/* IIR & Sampling ARRAY storage */
-	MPU6050_Accelerometer IIR[NUM_SAMPLES];
-	/* Retrieve 1st Sample (i-1) */
-	convert_ACCEL();
-	/* Initial conditions (equation) */
-	IIR[0].X = 0;
-	IIR[0].Y = 0;
-	IIR[0].Z = 0;
-	/* Store 1st Sample[0] */
-	Sampling[0].X = Acceleration.X;
-	Sampling[0].Y = Acceleration.Y;
-	Sampling[0].Z = Acceleration.Z;
 
-	for (int i = 1; i < NUM_SAMPLES; i++){
-		/* Retrieve current XYZ */
-		convert_ACCEL();
-		/* Store (iteratively) */
-		Sampling[i].X = Acceleration.X;
-		Sampling[i].Y = Acceleration.Y;
-		Sampling[i].Z = Acceleration.Z;
-		/* IIR equation (recursive relation) */
-		IIR[i].X = alpha * (IIR[i-1].X + Sampling[i].X - Sampling[i-1].X);
-		IIR[i].Y = alpha * (IIR[i-1].Y + Sampling[i].Y - Sampling[i-1].Y);
-		IIR[i].Z = alpha * (IIR[i-1].Z + Sampling[i].Z - Sampling[i-1].Z);
+	if (sample_count <= NUM_SAMPLES-1) {
+
+		/* Store sample[i] */
+		Sampling[sample_count].X = Acceleration.X;
+		Sampling[sample_count].Y = Acceleration.Y;
+		Sampling[sample_count].Z = Acceleration.Z;
+
+		/* Recursive equation */
+		IIR[sample_count].X = alpha * (IIR[sample_count-1].X + Sampling[sample_count].X - Sampling[sample_count-1].X);
+		IIR[sample_count].Y = alpha * (IIR[sample_count-1].Y + Sampling[sample_count].Y - Sampling[sample_count-1].Y);
+		IIR[sample_count].Z = alpha * (IIR[sample_count-1].Z + Sampling[sample_count].Z - Sampling[sample_count-1].Z);
+
+		/* Magnitude calculation */
+		mag_ACCEL[sample_count] = (pow(IIR[sample_count].X, 2) + pow(IIR[sample_count].Y, 2) + pow(IIR[sample_count].Z, 2));
+		mag_ACCEL[sample_count] = sqrt(mag_ACCEL[sample_count]);
+
+		/* Increment */
+		sample_count++;
+
 	}
-	/* Equate from Sampling[1] >> IIR[1] by NUM_SAMPLES-1 (bytes) */
-	memcpy(&Sampling[1], &IIR[1], (NUM_SAMPLES-1) * sizeof(IIR[0]));
-}
 
-void euclidean_NORMS() {
+	else {
 
-	for (int i = 0; i < NUM_SAMPLES-2; i++) { // ERROR HANDLING*
-		/* magnitude^2 =  x^2 + y^2 + z^2 */
-		mag_ACCEL[i] = (pow(Sampling[i+1].X, 2) + pow(Sampling[i+1].Y, 2) + pow(Sampling[i+1].Z, 2));
-		/* magnitude = √magnitude */
-		mag_ACCEL[i] = sqrt(mag_ACCEL[i]);
+		/* Rolling IIR */
+		IIR[0].X = IIR[NUM_SAMPLES-1].X;
+		IIR[0].Y = IIR[NUM_SAMPLES-1].Y;
+		IIR[0].Z = IIR[NUM_SAMPLES-1].Z;
+		/* Rolling samples */
+		Sampling[0].X = Sampling[NUM_SAMPLES-1].X;
+		Sampling[0].Y = Sampling[NUM_SAMPLES-1].Y;
+		Sampling[0].Z = Sampling[NUM_SAMPLES-1].Z;
+
+		mag_ACCEL[0] = mag_ACCEL[NUM_SAMPLES-1];
+
+		sample_count = 1;
+
+		/* Clear */
+		memset(&IIR[1], 0, sizeof(IIR[0]) * (NUM_SAMPLES - 1));
+		memset(&Sampling[1], 0, sizeof(Sampling[0]) * (NUM_SAMPLES - 1));
+		memset(&mag_ACCEL[1], 0, sizeof(mag_ACCEL[0]) * (NUM_SAMPLES - 1));
+
+		/* Call */
+		sprintf(UART, "Clear!");
+		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
 	}
-}
-
-void process_ACCEL() {
-	/* Sample and compute IIR (recursive relation) */
-	sample_HPF();
-	/* Calculate and store magnitudes (struct) */
-	euclidean_NORMS();
 }

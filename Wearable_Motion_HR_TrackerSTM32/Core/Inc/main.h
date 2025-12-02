@@ -47,10 +47,11 @@ extern "C" {
 #define GRAVITY 9.80665
 #define UART_BUFF_SIZE 128
 
+#define NUM_SAMPLES 40
+#define CUTOFF 25 //100Hz for SMPLRT >> 50Hz for Attenuation
+
 extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart2;
-
-extern char UART[UART_BUFF_SIZE];
 
 typedef struct {
 	double X;
@@ -59,6 +60,13 @@ typedef struct {
 } MPU6050_Accelerometer;
 
 extern MPU6050_Accelerometer Acceleration;
+extern MPU6050_Accelerometer IIR[NUM_SAMPLES];
+extern MPU6050_Accelerometer Sampling[NUM_SAMPLES];
+extern double mag_ACCEL[NUM_SAMPLES];
+
+extern char UART[UART_BUFF_SIZE];
+extern uint8_t sample_count;
+
 
 
 /* USER CODE END ET */
