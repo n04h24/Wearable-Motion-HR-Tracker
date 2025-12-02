@@ -17,12 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <sample_accel.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "MPU6050_conf.h"
-#include "filter_accel.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,10 +50,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 char UART[UART_BUFF_SIZE]; // EXTERNAL
 MPU6050_Accelerometer Acceleration; // EXTERNAL
-MPU6050_Accelerometer IIR[NUM_SAMPLES]; // EXTERNAL
-MPU6050_Accelerometer Sampling[NUM_SAMPLES]; // EXTERNAL
-double mag_ACCEL[NUM_SAMPLES];
-uint8_t sample_count = 1; // EXTERNAL
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,15 +103,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
   MPU6050_init();
   HAL_TIM_Base_Start_IT(&htim2);
-
-  /* Sampling initial conditions */
-  IIR[0].X = 0;
-  IIR[0].Y = 0;
-  IIR[0].Z = 0;
-  Sampling[0].X = 0;
-  Sampling[0].Y = 0;
-  Sampling[0].Z = 0;
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -344,11 +332,10 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 	if (htim == &htim2){
-
+		/* Retrieve from register */
 		convert_ACCEL();
-
-		sample_HPF_IT();
-
+		/* Output magnitude */
+		HPF_magnitiude_IT();
 	}
 }
 /* USER CODE END 4 */
