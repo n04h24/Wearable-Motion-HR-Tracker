@@ -334,6 +334,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if (htim == &htim2){
 		/* Retrieve from register */
 		convert_ACCEL();
+		/* Set starting conditions */
+		conditions_INIT();
 		/* Output magnitude */
 		HPF_magnitiude_IT();
 	}

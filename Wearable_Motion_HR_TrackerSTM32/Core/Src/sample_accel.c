@@ -15,19 +15,18 @@ uint8_t sample_count = 1; // EXTERNAL
 
 /* INTERRUPT (Sample Acceleration) */
 
+void conditions_INIT() {
+
+	IIR[0].X = 0;
+	IIR[0].Y = 0;
+	IIR[0].Z = 0;
+	Sampling[0].X = 0;
+	Sampling[0].Y = 0;
+	Sampling[0].Z = 0;
+}
+
 void HPF_magnitiude_IT() {
 
-	/* Initial condition */
-	static uint8_t start = 0;
-	if (!start) {
-		IIR[0].X = 0;
-		IIR[0].Y = 0;
-		IIR[0].Z = 0;
-		Sampling[0].X = 0;
-		Sampling[0].Y = 0;
-		Sampling[0].Z = 0;
-		start = 1;
-	}
 	/* IIR variables */
 	float RC = 1.0/(CUTOFF*2*M_PI);
 	float dt = 1.0 / 80;

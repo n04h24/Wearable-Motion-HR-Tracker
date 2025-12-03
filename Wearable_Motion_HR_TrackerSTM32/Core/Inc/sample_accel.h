@@ -23,6 +23,8 @@ extern double mag_ACCEL[NUM_SAMPLES];
 extern uint8_t sample_count; // EXTERNAL
 
 /* Function Declarations */
+void conditions_INIT();
+
 void HPF_magnitiude_IT();
 
 #endif /* INC_SAMPLE_ACCEL_H_ */
