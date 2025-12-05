@@ -13,8 +13,8 @@
 #include "MPU6050_conf.h"
 
 /* Defines */
-#define NUM_SAMPLES 40
-#define CUTOFF 25 //100Hz for SMPLRT >> 50Hz for Attenuation
+#define NUM_SAMPLES 80
+#define CUTOFF 1 //100Hz for SMPLRT >> 50Hz for Attenuation
 
 /* Externs */
 extern MPU6050_Accelerometer IIR[NUM_SAMPLES]; // EXTERNAL
