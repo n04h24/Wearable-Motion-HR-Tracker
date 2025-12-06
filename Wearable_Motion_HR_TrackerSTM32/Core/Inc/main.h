@@ -46,6 +46,7 @@ extern "C" {
 #define SMPLRT_DIV 0x19
 #define GRAVITY 9.80665
 #define UART_BUFF_SIZE 128
+#define SD_SPI_HANDLE hspi1
 
 extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart2;
@@ -78,6 +79,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SPI1_CS_Pin GPIO_PIN_0
+#define SPI1_CS_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
