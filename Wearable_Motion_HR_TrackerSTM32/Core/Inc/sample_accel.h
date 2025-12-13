@@ -9,7 +9,7 @@
 #define INC_SAMPLE_ACCEL_H_
 
 /* Includes */
-#include "main.h"
+#include <main.h>
 #include "MPU6050_conf.h"
 
 /* Defines */

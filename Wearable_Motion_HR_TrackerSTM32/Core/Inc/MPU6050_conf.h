@@ -2,8 +2,8 @@
 #define MPU6050_CONF_H
 
 /* Includes */
-#include "main.h"
 #include <inttypes.h>
+#include <main.h>
 
 /* Defines */
 #define ACCEL_XOUT_H 0x3B
