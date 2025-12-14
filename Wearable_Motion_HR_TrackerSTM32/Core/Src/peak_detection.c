@@ -11,9 +11,10 @@
 
 uint8_t vector_state = 0; //EXTERN
 Timing STEP;
-MPU6050_Accelerometer START;
-MPU6050_Accelerometer PEAK;
-MPU6050_Accelerometer END;
+MPU6050_Accelerometer START_VECTOR;
+MPU6050_Accelerometer PEAK_VECTOR;
+MPU6050_Accelerometer STOP_VECTOR;
+MPU6050_Accelerometer PEAK_SERIES[PEAK_SERIES_SIZE];
 /* INTERRUPT (Sample Acceleration >> Receive Magnitude) */
 
 void vector_tracking() {
@@ -23,23 +24,41 @@ void vector_tracking() {
 		/* Start */
 		case (0):
 			/* Evaluate */
-			if ((MagSamples.A > MagSamples.B) && (MagSamples.B > MagSamples.C)) {
-				/* Store 1st */
-				START = MagComponents[2];
+			if ((MagSamples[0].Magnitude > MagSamples[1].Magnitude)
+				&& (MagSamples[1].Magnitude > MagSamples[2].Magnitude)
+				&& (MagSamples[2].Magnitude > MagSamples[3].Magnitude)) {
+				/* */
+				START_VECTOR = MagSamples[3];
 				STEP.BEGIN = clock();
 				vector_state++;
 			}
 			break;
 		/* Peak */
 		case (1):
-//			if (1)
+			/* Evaluate */
+			if (IIR[sample_count-1].Magnitude >= PEAK_THRESHOLD) {
+				/* Retains value across function calls */
+				static uint8_t peak_count;
+				/* Store up to ~200 (2 seconds) */
+				PEAK_SERIES[peak_count] = IIR[sample_count-1];
+			}
+			else if (IIR[sample_count-1].Magnitude < PEAK_THRESHOLD) {
+				/* Iterate & Return Max Value */
+			}
 			break;
-		/* End/Start */
+		/* End(2) */
 		case (2):
-				//code
-				break;
+			/* Evaluate */
+			if ((MagSamples[0].Magnitude > MagSamples[1].Magnitude)
+				&& (MagSamples[1].Magnitude > MagSamples[2].Magnitude)) {
+				/* */
+				STOP_VECTOR = MagSamples[2];
+				STEP.END = clock();
+				STEP.TIME = STEP.END - STEP.BEGIN;
+				vector_state++;
+			}
+			break;
 	default:
 		//code
 	}
-
 }

@@ -54,6 +54,7 @@ typedef struct {
 	double X;
 	double Y;
 	double Z;
+	double Magnitude;
 } MPU6050_Accelerometer;
 
 extern MPU6050_Accelerometer Acceleration;

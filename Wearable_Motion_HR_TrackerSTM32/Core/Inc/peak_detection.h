@@ -13,11 +13,12 @@
 #include "filtering_accel.h"
 #include <time.h>
 /* Defines */
-#define STEP_THRESHOLD 0.35
+#define PEAK_THRESHOLD 0.35
+#define PEAK_SERIES_SIZE 200
 /* Externs */
 typedef struct {
 	float BEGIN;
-	float STOP;
+	float END;
 	float TIME;
 } Timing;
 extern float step_TIME;
@@ -25,9 +26,10 @@ extern float step_BEGIN;
 extern float step_STOP;
 extern uint8_t vector_state;
 extern Timing STEP;
-extern MPU6050_Accelerometer START;
-extern MPU6050_Accelerometer PEAK;
-extern MPU6050_Accelerometer END;
+extern MPU6050_Accelerometer START_VECTOR;
+extern MPU6050_Accelerometer PEAK_VECTOR;
+extern MPU6050_Accelerometer STOP_VECTOR;
+extern MPU6050_Accelerometer PEAK_SERIES[PEAK_SERIES_SIZE];
 /* Function Prototypes */
 void vector_tracking();
 
