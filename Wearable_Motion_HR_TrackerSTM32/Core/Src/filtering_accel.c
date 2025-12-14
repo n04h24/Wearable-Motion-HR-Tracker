@@ -5,7 +5,7 @@
  *      Author: noah
  */
 
-#include <sample_accel.h>
+#include <filtering_accel.h>
 
 /* Global Variables */
 MPU6050_Accelerometer IIR[NUM_SAMPLES]; // EXTERNAL
