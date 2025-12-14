@@ -8,28 +8,31 @@
 #include "peak_detection.h"
 
 /* Global Variables */
-uint8_t vector_state = 0; //EXTERN
-double START;
-double PEAK;
-double END;
 
+uint8_t vector_state = 0; //EXTERN
+Timing STEP;
+MPU6050_Accelerometer START;
+MPU6050_Accelerometer PEAK;
+MPU6050_Accelerometer END;
 /* INTERRUPT (Sample Acceleration >> Receive Magnitude) */
 
 void vector_tracking() {
 
-	/* Retrieve 1,2,3 magnitudes */
-
+	/* Pass 1,2,3 magnitudes */
 	switch (vector_state) {
 		/* Start */
 		case (0):
 			/* Evaluate */
-			if (1) {
-
+			if ((MagSamples.A > MagSamples.B) && (MagSamples.B > MagSamples.C)) {
+				/* Store 1st */
+				START = MagComponents[2];
+				STEP.BEGIN = clock();
+				vector_state++;
 			}
 			break;
 		/* Peak */
 		case (1):
-			//code
+//			if (1)
 			break;
 		/* End/Start */
 		case (2):

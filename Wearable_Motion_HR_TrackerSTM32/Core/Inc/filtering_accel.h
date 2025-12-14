@@ -19,13 +19,15 @@
 /* Externs */
 extern MPU6050_Accelerometer IIR[NUM_SAMPLES];
 extern MPU6050_Accelerometer Sampling[NUM_SAMPLES];
-extern double mag_ACCEL[NUM_SAMPLES];
+extern MPU6050_Accelerometer MagComponents[3];
+extern double magnitude[NUM_SAMPLES];
 extern uint8_t sample_count;
 typedef struct {
 	double A;
 	double B;
 	double C;
 } LastSamples;
+extern LastSamples MagSamples;
 
 /* Function Declarations */
 void conditions_INIT();
