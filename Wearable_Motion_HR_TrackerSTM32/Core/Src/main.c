@@ -17,12 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <filtering_accel.h>
 #include "main.h"
 #include "app_fatfs.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "MPU6050_conf.h"
+#include "filtering_accel.h"
 #include "peak_detection.h"
 /* USER CODE END Includes */
 
@@ -389,6 +389,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		convert_ACCEL();
 		/* Output magnitude */
 		HPF_magnitiude_IT();
+		/* Interpret magnitude */
+		vector_tracking();
 	}
 }
 /* USER CODE END 4 */

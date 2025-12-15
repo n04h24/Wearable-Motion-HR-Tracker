@@ -13,7 +13,7 @@
 #include "filtering_accel.h"
 #include <time.h>
 /* Defines */
-#define PEAK_THRESHOLD 0.35
+#define PEAK_THRESHOLD 0.6
 #define PEAK_SERIES_SIZE 200
 /* Externs */
 typedef struct {
