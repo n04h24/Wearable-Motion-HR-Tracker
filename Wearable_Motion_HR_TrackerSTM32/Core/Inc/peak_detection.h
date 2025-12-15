@@ -19,7 +19,7 @@
 typedef struct {
 	float BEGIN;
 	float END;
-	float TIME;
+	double TIME;
 } Timing;
 extern float step_TIME;
 extern float step_BEGIN;

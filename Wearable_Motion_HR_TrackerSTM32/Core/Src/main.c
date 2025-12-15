@@ -115,7 +115,6 @@ int main(void)
   /* Start IT timer */
   HAL_TIM_Base_Start_IT(&htim2);
 
-//  f_open();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -383,15 +382,22 @@ static void MX_GPIO_Init(void)
 	// Sample[_init_]
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-
+	double START_IT = clock();
+	double END_IT;
 	if (htim == &htim2){
+
 		/* Retrieve from register */
 		convert_ACCEL();
 		/* Output magnitude */
 		HPF_magnitiude_IT();
 		/* Interpret magnitude */
 		vector_tracking();
+		END_IT = clock();
 	}
+	HAL_Delay(20);
+	double TIME_IT;
+	TIME_IT = END_IT - START_IT;
+	START_IT = clock();
 }
 /* USER CODE END 4 */
 
