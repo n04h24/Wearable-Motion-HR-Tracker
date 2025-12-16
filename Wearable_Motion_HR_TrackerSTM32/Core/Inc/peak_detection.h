@@ -17,9 +17,9 @@
 #define PEAK_SERIES_SIZE 200
 /* Externs */
 typedef struct {
-	float BEGIN;
-	float END;
-	double TIME;
+	uint32_t BEGIN;
+	uint32_t END;
+	uint32_t TIME;
 } Timing;
 extern float step_TIME;
 extern float step_BEGIN;

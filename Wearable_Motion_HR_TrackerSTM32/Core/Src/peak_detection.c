@@ -29,7 +29,7 @@ void vector_tracking() {
 				&& (MagSamples[2].Magnitude > MagSamples[3].Magnitude)) {
 				/* */
 				START_VECTOR = MagSamples[3];
-				STEP.BEGIN = clock();
+				STEP.BEGIN = HAL_GetTick();
 				sprintf(UART, "Step Started?");
 				HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
 				VECTOR_STATE++;
@@ -72,9 +72,9 @@ void vector_tracking() {
 				/* */
 				STOP_VECTOR = MagSamples[2];
 //				HAL_Delay(20);
-				STEP.END = clock();
+				STEP.END = HAL_GetTick();
 				STEP.TIME = STEP.END - STEP.BEGIN;
-				sprintf(UART, "Step Finished! Duration is: %f", STEP.TIME);
+				sprintf(UART, "Step Finished! Duration is: %lu", STEP.TIME);
 				HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
 				VECTOR_STATE = 0;
 			}
