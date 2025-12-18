@@ -12,9 +12,12 @@
 #include "main.h"
 
 /* Defines */
+#define MAX30102_WRITE 0xAE
+#define MAX30102_READ 0xAF
 
 /* Externs */
 
 /* Function Declarations */
+void check_device_add();
 
 #endif /* INC_HR_FORMAT_H_ */

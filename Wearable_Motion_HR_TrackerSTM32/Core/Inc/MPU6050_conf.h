@@ -6,6 +6,12 @@
 #include <inttypes.h>
 
 /* Defines */
+#define MPU6050 0x68
+#define ACCEL_CONFIG 0x1C
+#define PWR_MGMT_1 0x6B
+#define SMPLRT_DIV 0x19
+#define GRAVITY 9.80665
+	/* Raw acceleration registers */
 #define ACCEL_XOUT_H 0x3B
 #define ACCEL_XOUT_L 0x3C
 #define ACCEL_YOUT_H 0x3D

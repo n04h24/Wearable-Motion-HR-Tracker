@@ -25,6 +25,7 @@
 #include "MPU6050_conf.h"
 #include "filtering_accel.h"
 #include "peak_detection.h"
+#include "HR_format.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -120,6 +121,7 @@ int main(void)
   /* Set starting conditions */
   conditions_INIT();
   /* Start IT timer */
+  check_device_add();
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
