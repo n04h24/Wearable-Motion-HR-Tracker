@@ -117,11 +117,14 @@ int main(void)
   MX_I2C2_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
+
+  /* Setup MPU6050 */
   MPU6050_init();
   /* Set starting conditions */
   conditions_INIT();
-  /* Configure MAX30102 */
-  MAX30102_config();
+  /* Setup MAX30102 */
+  MAX30102_init();
+  MAX30102_temp();
   /* Start IT timer */
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */

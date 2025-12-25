@@ -6,7 +6,7 @@
 #include <inttypes.h>
 
 /* Defines */
-#define MPU6050 0x68
+#define MPU6050_ADD 0x68
 #define ACCEL_CONFIG 0x1C
 #define PWR_MGMT_1 0x6B
 #define SMPLRT_DIV 0x19

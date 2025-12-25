@@ -14,8 +14,7 @@
 
 /* Defines */
 #define MAX30102_ADD 0b1010111
-#define MAX30102_WRITE 0xAE
-#define MAX30102_READ 0xAF
+#define DIE_TEMP_READY 0x01
 #define FIFO_WR_PTR 0x04
 #define FIFO_RD_PTR 0x06
 #define OVF_COUNTER 0x05
@@ -23,12 +22,17 @@
 #define FIFO_CONFIG 0x08
 #define MODE_CONFIG 0x09
 #define SPO2_CONFIG 0x0A
+#define LED1_PA 0x0C
+#define TEMP_INT 0x1F
+#define TEMP_FRAC 0x20
+#define TEMP_EN 0x21
 
 /* Externs */
+extern int8_t MAX30102_die_temp[];
 
 /* Function Declarations */
-void MAX30102_config();
+void MAX30102_init();
 
-void MAX30102_HR();
+void MAX30102_temp();
 
 #endif /* INC_HR_FORMAT_H_ */

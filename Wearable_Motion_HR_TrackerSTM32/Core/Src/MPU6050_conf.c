@@ -46,22 +46,22 @@ void calculate_FACT() {
 	/* Retrieval */
 
 	 /* XA_TEST (Bit 4-2)  */
-	 HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0D, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	 HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, 0x0D, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	 // Read from REG13
 	 uint8_t XA_testA = (check_memory & 0xE0) >> 3;
 
 	 /* YA_TEST (Bit 4-2)  */
-	 HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0E, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	 HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, 0x0E, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	 // Read from REG14
 	 uint8_t YA_testA = (check_memory & 0xE0) >> 3;
 
 	 /* ZA_TEST (Bit 4-2)  */
-	 HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x0F, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	 HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, 0x0F, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	 // Read from REG15
 	 uint8_t ZA_testA = (check_memory & 0xE0) >> 3;
 
 	 /* XA_TEST, YA_Test, ZA_TEST (Bit 1-0) */
-	 HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, 0x10, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	 HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, 0x10, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	 // Read from REG16
 
 	/* Shift (Bit 1-0) */
@@ -98,7 +98,7 @@ void test_RESPONSE() {
 	readA_CONCAT(&raw_X1, &raw_Y1, &raw_Z1);
 
 	/* Triggers SFT >> ±8g Sensitivity for XYZ */
-	config_I2Cmem(&hi2c1, MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050_ADD, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* After Self-Test */
 	int16_t raw_X2 = 0;
@@ -131,7 +131,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 
 	HAL_StatusTypeDef status;
 	/* Retrieve upper-X value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	ACCEL_X_H = check_memory;
 
 	if (status != HAL_OK) {
@@ -140,7 +140,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	}
 
 	/* Retrieve lower-X value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	ACCEL_X_L = check_memory;
 
 	if (status != HAL_OK) {
@@ -152,7 +152,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	*raw_X = (int16_t)(((uint16_t)ACCEL_X_H << 8) | ACCEL_X_L);
 
 	/* Retrieve upper-Y value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	ACCEL_Y_H = check_memory;
 
 	if (status != HAL_OK) {
@@ -161,7 +161,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	}
 
 	/* Retrieve lower-Y value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_YOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_YOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	ACCEL_Y_L = check_memory;
 
 	if (status != HAL_OK) {
@@ -173,7 +173,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	*raw_Y = (int16_t)(((uint16_t)ACCEL_Y_H << 8) | ACCEL_Y_L);
 
 	/* Retrieve upper-Z value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	ACCEL_Z_H = check_memory;
 
 	if (status != HAL_OK) {
@@ -182,7 +182,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 		}
 
 	/* Retrieve lower-Z value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050 << 1, ACCEL_ZOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_ZOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	ACCEL_Z_L = check_memory;
 
 	if (status != HAL_OK) {
@@ -257,7 +257,7 @@ void convert_ACCEL() {
 void MPU6050_init() {
 
 	/* Wake device */
-	config_I2Cmem(&hi2c1, MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050_ADD, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* Retrieve factory trims */
 	calculate_FACT();
@@ -266,12 +266,12 @@ void MPU6050_init() {
 	test_RESPONSE();
 
 	/* Changes sensitivity for application (±2g) */
-	config_I2Cmem(&hi2c1, MPU6050, ACCEL_CONFIG, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050_ADD, ACCEL_CONFIG, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* Determine & store offsets: Sensor drift */
 	calculate_OFFS();
 
 	/* Sample to 79; 100x a second */
-	config_I2Cmem(&hi2c1, MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050_ADD, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
 
 }
