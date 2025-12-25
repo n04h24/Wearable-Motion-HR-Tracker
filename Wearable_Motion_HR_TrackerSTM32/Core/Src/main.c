@@ -120,8 +120,9 @@ int main(void)
   MPU6050_init();
   /* Set starting conditions */
   conditions_INIT();
+  /* Configure MAX30102 */
+  MAX30102_config();
   /* Start IT timer */
-  check_device_add();
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 

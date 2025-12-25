@@ -24,13 +24,20 @@ uint8_t ACCEL_Z_L;
 
 /* Implementations */
 
-void config_I2Cmem(uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size){
+void config_I2Cmem(I2C_HandleTypeDef *handle, uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size){
 
-	HAL_StatusTypeDef status = HAL_I2C_Mem_Write(&hi2c1, device << 1, memory_add, mem_size, &write_mem, data_size, 100);
+	HAL_StatusTypeDef status = HAL_I2C_Mem_Write(handle, device << 1, memory_add, mem_size, &write_mem, data_size, 100);
 
 	/* Check I2C write = Success */
-	if (status != HAL_OK){
-	  //Error message*
+	if (status == HAL_OK){
+		HAL_I2C_Mem_Read(handle, device << 1, memory_add, mem_size, &check_memory, data_size, 100);
+		snprintf(UART, sizeof(UART), "Address value is 0x%02x", check_memory);
+		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
+	}
+	else if (status != HAL_OK){
+		HAL_I2C_Mem_Read(handle, device << 1, memory_add, mem_size, &check_memory, data_size, 100);
+		snprintf(UART, strlen(UART), "Broken Address value is 0x%02x", check_memory);
+		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
 	}
 }
 
@@ -91,7 +98,7 @@ void test_RESPONSE() {
 	readA_CONCAT(&raw_X1, &raw_Y1, &raw_Z1);
 
 	/* Triggers SFT >> ±8g Sensitivity for XYZ */
-	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050, ACCEL_CONFIG, 0xF0, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* After Self-Test */
 	int16_t raw_X2 = 0;
@@ -250,7 +257,7 @@ void convert_ACCEL() {
 void MPU6050_init() {
 
 	/* Wake device */
-	config_I2Cmem(MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050, PWR_MGMT_1, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* Retrieve factory trims */
 	calculate_FACT();
@@ -259,12 +266,12 @@ void MPU6050_init() {
 	test_RESPONSE();
 
 	/* Changes sensitivity for application (±2g) */
-	config_I2Cmem(MPU6050, ACCEL_CONFIG, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050, ACCEL_CONFIG, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
 	/* Determine & store offsets: Sensor drift */
 	calculate_OFFS();
 
 	/* Sample to 79; 100x a second */
-	config_I2Cmem(MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c1, MPU6050, SMPLRT_DIV, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
 
 }

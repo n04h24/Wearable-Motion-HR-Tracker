@@ -10,14 +10,22 @@
 
 /* Includes */
 #include "main.h"
+#include "MPU6050_conf.h"
 
 /* Defines */
+#define MAX30102_ADD 0b1010111
 #define MAX30102_WRITE 0xAE
 #define MAX30102_READ 0xAF
+#define FIFO_WR_PTR 0x04
+#define FIFO_RD_PTR 0x06
+#define OVF_COUNTER 0x05
+#define FIFO_DATA 0x07
 
 /* Externs */
 
 /* Function Declarations */
-void check_device_add();
+void MAX30102_config();
+
+void MAX30102_HR();
 
 #endif /* INC_HR_FORMAT_H_ */

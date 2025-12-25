@@ -32,7 +32,7 @@ extern uint8_t ACCEL_Z_H;
 extern uint8_t ACCEL_Z_L;
 
 /* Function Declarations */
-void config_I2Cmem(uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size);
+void config_I2Cmem(I2C_HandleTypeDef *handle, uint16_t device, uint16_t memory_add, uint8_t write_mem, uint16_t mem_size, uint16_t data_size);
 
 void calculate_FACT();
 
