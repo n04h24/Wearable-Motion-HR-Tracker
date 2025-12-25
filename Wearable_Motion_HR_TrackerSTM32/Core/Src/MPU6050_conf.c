@@ -36,7 +36,7 @@ void config_I2Cmem(I2C_HandleTypeDef *handle, uint16_t device, uint16_t memory_a
 	}
 	else if (status != HAL_OK){
 		HAL_I2C_Mem_Read(handle, device << 1, memory_add, mem_size, &check_memory, data_size, 100);
-		snprintf(UART, strlen(UART), "Broken Address value is 0x%02x", check_memory);
+		snprintf(UART, strlen(UART), "Value: 0x%02x not configured/read/stored correctly", check_memory);
 		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
 	}
 }

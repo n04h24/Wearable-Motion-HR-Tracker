@@ -20,6 +20,9 @@
 #define FIFO_RD_PTR 0x06
 #define OVF_COUNTER 0x05
 #define FIFO_DATA 0x07
+#define FIFO_CONFIG 0x08
+#define MODE_CONFIG 0x09
+#define SPO2_CONFIG 0x0A
 
 /* Externs */
 

@@ -10,15 +10,17 @@
 /* Global variables */
 void MAX30102_config(){
 
-	HAL_StatusTypeDef status = HAL_I2C_IsDeviceReady(&hi2c2, MAX30102_ADD << 1, 1, 100);
-	if (status == HAL_OK) {
-		config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_WR_PTR, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
-	}
-	else {
-		snprintf(UART, strlen(UART), "Failed");
-		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
-	}
+	/* Bring FIFO to known state: 0x00 */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_WR_PTR, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c2, MAX30102_ADD, OVF_COUNTER, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_RD_PTR, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 
+	/* Sample averaging (0) and FLAG (18) unread samples */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_CONFIG, 0x0E, I2C_MEMADD_SIZE_8BIT, 1);
+	/* Open HR (& Red ONLY) mode (010) */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, MODE_CONFIG, 0x02, I2C_MEMADD_SIZE_8BIT, 1);
+	/* Set pulse-width to 118ns & 16-bit ADC */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, SPO2_CONFIG, 0x01, I2C_MEMADD_SIZE_8BIT, 1);
 }
 
 
