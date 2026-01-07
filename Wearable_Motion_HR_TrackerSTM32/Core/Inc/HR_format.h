@@ -14,7 +14,10 @@
 
 /* Defines */
 #define MAX30102_ADD 0b1010111
-#define DIE_TEMP_READY 0x01
+#define INT_STAT1 0x00
+#define INT_STAT2 0x01
+#define INT_EN1 0x02
+#define INT_EN2 0x03
 #define FIFO_WR_PTR 0x04
 #define FIFO_RD_PTR 0x06
 #define OVF_COUNTER 0x05
@@ -28,11 +31,14 @@
 #define TEMP_EN 0x21
 
 /* Externs */
-extern int8_t MAX30102_die_temp[];
+extern float MAX30102_DieTemp[20];
+extern uint8_t die_sample;
 
 /* Function Declarations */
 void MAX30102_init();
 
 void MAX30102_temp();
+
+void MAX30102_HR();
 
 #endif /* INC_HR_FORMAT_H_ */
