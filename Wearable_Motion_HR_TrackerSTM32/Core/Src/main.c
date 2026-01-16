@@ -57,7 +57,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 char UART[UART_BUFF_SIZE]; // EXTERNAL
 MPU6050_Accelerometer Acceleration; // EXTERNAL
-
+uint8_t overwrite_BUFF = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -123,7 +123,11 @@ int main(void)
   /* Set starting conditions */
   conditions_INIT();
   /* Setup MAX30102 */
-  MAX30102_init();
+  if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10) == GPIO_PIN_RESET ||
+      HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11) == GPIO_PIN_RESET) {
+      // bus stuck low (hardware issue or slave holding SDA low)
+	  uint8_t boolean = 1;
+  }
   MAX30102_temp();
   MAX30102_HR();
   /* Start IT timer */

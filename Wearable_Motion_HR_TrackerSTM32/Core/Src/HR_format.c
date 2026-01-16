@@ -9,13 +9,14 @@
 
 /* Global variables */
 uint8_t die_sample = 0;
+uint8_t check_memoryMAX = 0;
 /* FIFO Buffer */
 float MAX30102_DieTemp[20];
 
 void MAX30102_init() {
 	/* Clear "latched" interrupts */
-	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT2, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
+	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT2, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
 	/* Soft Reset */
 	config_I2Cmem(&hi2c2, MAX30102_ADD, MODE_CONFIG, 0x40, I2C_MEMADD_SIZE_8BIT, 1);
 	HAL_Delay(10);
@@ -37,16 +38,8 @@ void MAX30102_init() {
 	config_I2Cmem(&hi2c2, MAX30102_ADD, INT_EN2, 0x02, I2C_MEMADD_SIZE_8BIT, 1);
 	/* HR mode enable */
 	config_I2Cmem(&hi2c2, MAX30102_ADD, MODE_CONFIG, 0x02, I2C_MEMADD_SIZE_8BIT, 1);
-	HAL_Delay(10);
 	/* Clear "latched" interrupts */
-	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-		/* PWR RDY (1) */
-
-	HAL_StatusTypeDef error88 = HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT2, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-		/* '88' ERROR – 0b10001000 */
-	if (error88 != HAL_OK) {
-		/* Pause & Read */
-	}
+	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
 }
 
 void MAX30102_temp() {
@@ -57,15 +50,15 @@ void MAX30102_temp() {
 	config_I2Cmem(&hi2c2, MAX30102_ADD, TEMP_EN, 0x01, I2C_MEMADD_SIZE_8BIT, 1);
 	HAL_Delay(10);
 	/* Confirm conversion (INT) */
-	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT2, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT2, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
 
-	if (check_memory == 0x02) {
+	if (check_memoryMAX == 0x02) {
 		/* Read & store integer (unsigned-int) */
-		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, TEMP_INT, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-		TEMP_INT_VAL = (int8_t)check_memory;
+		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, TEMP_INT, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
+		TEMP_INT_VAL = (int8_t)check_memoryMAX;
 		/* Read & store fraction (float; 32-bit) */
-		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, TEMP_FRAC, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-		TEMP_FRAC_VAL = 0.0625 * (float)check_memory;
+		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, TEMP_FRAC, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
+		TEMP_FRAC_VAL = 0.0625 * (float)check_memoryMAX;
 			/* NB: Casting type-pointer reinterprets memory itself */
 
 		/* Store die temperature (float) */
@@ -79,12 +72,12 @@ void MAX30102_temp() {
 void MAX30102_HR() {
 
 	/* Check PPG (INT1) */
-	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
 	/* Check unread samples (pointer-wrap) */
 		// WR_pointer
-		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, FIFO_WR_PTR, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, FIFO_WR_PTR, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
 		// RD_pointer
-		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, FIFO_RD_PTR, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, FIFO_RD_PTR, I2C_MEMADD_SIZE_8BIT, &check_memoryMAX, 1, 100);
 
 	/* Retrieve & append 3-Bytes for NUM_SAMPLES_READ */
 

@@ -30,10 +30,12 @@
 #define TEMP_INT 0x1F
 #define TEMP_FRAC 0x20
 #define TEMP_EN 0x21
+#define PART_ID 0xFF
 
 /* Externs */
-extern float MAX30102_DieTemp[20];
+extern uint8_t check_memoryMAX;
 extern uint8_t die_sample;
+extern float MAX30102_DieTemp[20];
 
 /* Function Declarations */
 void MAX30102_init();
