@@ -125,6 +125,7 @@ int main(void)
   /* Setup MAX30102 */
   MAX30102_init();
   MAX30102_temp();
+  MAX30102_HR();
   /* Start IT timer */
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
