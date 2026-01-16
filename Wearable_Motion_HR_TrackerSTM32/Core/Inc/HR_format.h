@@ -26,6 +26,7 @@
 #define MODE_CONFIG 0x09
 #define SPO2_CONFIG 0x0A
 #define LED1_PA 0x0C
+#define LED2_PA 0x0D
 #define TEMP_INT 0x1F
 #define TEMP_FRAC 0x20
 #define TEMP_EN 0x21

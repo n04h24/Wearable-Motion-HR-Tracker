@@ -16,25 +16,36 @@ void MAX30102_init() {
 	/* Clear "latched" interrupts */
 	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
 	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT2, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
-	/* Open HR (& Red ONLY) mode (010) */
-	config_I2Cmem(&hi2c2, MAX30102_ADD, MODE_CONFIG, 0x02, I2C_MEMADD_SIZE_8BIT, 1);
+	/* Soft Reset */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, MODE_CONFIG, 0x40, I2C_MEMADD_SIZE_8BIT, 1);
 	HAL_Delay(10);
-	/* Sample averaging (4) and FLAG (17) unread samples (a.k.a 15-empty slots) */
-	config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_CONFIG, 0x5F, I2C_MEMADD_SIZE_8BIT, 1);
 	/* Bring FIFO to known state: 0x00 */
 	config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_WR_PTR, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 	config_I2Cmem(&hi2c2, MAX30102_ADD, OVF_COUNTER, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 	config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_RD_PTR, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
-	/* Set pulse-width to _|‾‾|__|‾‾|__ 411microsec (MAX) & 18-bit (MAX resolution) ADC */
-	config_I2Cmem(&hi2c2, MAX30102_ADD, SPO2_CONFIG, 0x27, I2C_MEMADD_SIZE_8BIT, 1);
+	/* Sample averaging (4) and FLAG (17) unread samples (a.k.a 15-empty slots). No Rollover */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, FIFO_CONFIG, 0x4F, I2C_MEMADD_SIZE_8BIT, 1);
+	/* Set pulse-width to _|‾‾|__|‾‾|__ 411microsec (MAX) & 18-bit ADC Resolution */
+	/* 8192 nA ADC Range Control & 100 sps */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, SPO2_CONFIG, 0x87, I2C_MEMADD_SIZE_8BIT, 1);
 	/* Set (red) LED current to 51mA (MAX) */
-	config_I2Cmem(&hi2c2, MAX30102_ADD, LED1_PA, 0xFF, I2C_MEMADD_SIZE_8BIT, 1);
+	config_I2Cmem(&hi2c2, MAX30102_ADD, LED1_PA, 0x24, I2C_MEMADD_SIZE_8BIT, 1);
+	/* Set (IR) LED current to OFF */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, LED2_PA, 0x00, I2C_MEMADD_SIZE_8BIT, 1);
 	/* Enable Interrupts: FIFO_Almost_Full & FIFO_Data_Ready (1); DIE_TEMP_Ready (2) */
 	config_I2Cmem(&hi2c2, MAX30102_ADD, INT_EN1, 0xC0, I2C_MEMADD_SIZE_8BIT, 1);
 	config_I2Cmem(&hi2c2, MAX30102_ADD, INT_EN2, 0x02, I2C_MEMADD_SIZE_8BIT, 1);
-	/* Check PWR_RDY (to take measurements) */
-	while (!(check_memory & 0x01)) {
-		HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	/* HR mode enable */
+	config_I2Cmem(&hi2c2, MAX30102_ADD, MODE_CONFIG, 0x02, I2C_MEMADD_SIZE_8BIT, 1);
+	HAL_Delay(10);
+	/* Clear "latched" interrupts */
+	HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT1, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+		/* PWR RDY (1) */
+
+	HAL_StatusTypeDef error88 = HAL_I2C_Mem_Read(&hi2c2, MAX30102_ADD << 1, INT_STAT2, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+		/* '88' ERROR – 0b10001000 */
+	if (error88 != HAL_OK) {
+		/* Pause & Read */
 	}
 }
 
