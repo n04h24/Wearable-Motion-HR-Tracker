@@ -86,3 +86,99 @@ void MAX30102_HR() {
 		// RD_pointer
 
 }
+
+/* ––––––––––––––––––––––––––––––––––––––– TEST FUNCTION */
+
+volatile HAL_StatusTypeDef g_ready_st_7  = HAL_ERROR;
+volatile HAL_StatusTypeDef g_ready_st_8  = HAL_ERROR;
+volatile uint32_t          g_ready_err_7 = 0;
+volatile uint32_t          g_ready_err_8 = 0;
+
+volatile HAL_StatusTypeDef g_read_st_7   = HAL_ERROR;
+volatile HAL_StatusTypeDef g_read_st_8   = HAL_ERROR;
+volatile uint32_t          g_read_err_7  = 0;
+volatile uint32_t          g_read_err_8  = 0;
+
+volatile uint8_t g_part_7 = 0x00, g_rev_7 = 0x00, g_int2_7 = 0x00;
+volatile uint8_t g_part_8 = 0x00, g_rev_8 = 0x00, g_int2_8 = 0x00;
+
+
+
+void I2C2_MAX30102_TestFunction() {
+
+  // ---- Test A: correct STM32 HAL convention (pass 8-bit address byte = 7bit<<1) ----
+	uint16_t addr_hal = (MAX30102_ADDR_7BIT << 1);     // 0xAE
+
+	g_ready_st_7  = HAL_I2C_IsDeviceReady(&hi2c2, addr_hal, 3, 20);
+	g_ready_err_7 = HAL_I2C_GetError(&hi2c2);
+
+	g_read_st_7   = read_reg(addr_hal, REG_PART_ID, (uint8_t*)&g_part_7);
+	g_read_err_7  = HAL_I2C_GetError(&hi2c2);
+
+	(void)read_reg(addr_hal, REG_REV_ID,     (uint8_t*)&g_rev_7);
+	(void)read_reg(addr_hal, REG_INT_STATUS2,(uint8_t*)&g_int2_7);
+
+	// ---- Test B: WRONG-on-purpose (treat 0x57 as if it were already HAL addr) ----
+	// This helps detect “double shift” / mixed conventions elsewhere.
+	uint16_t addr_wrong = (MAX30102_ADDR_7BIT);       // 0x57 (not shifted)
+
+	g_ready_st_8  = HAL_I2C_IsDeviceReady(&hi2c2, addr_wrong, 3, 20);
+	g_ready_err_8 = HAL_I2C_GetError(&hi2c2);
+
+	g_read_st_8   = read_reg(addr_wrong, REG_PART_ID, (uint8_t*)&g_part_8);
+	g_read_err_8  = HAL_I2C_GetError(&hi2c2);
+
+	(void)read_reg(addr_wrong, REG_REV_ID,      (uint8_t*)&g_rev_8);
+	(void)read_reg(addr_wrong, REG_INT_STATUS2, (uint8_t*)&g_int2_8);
+
+	// Put a breakpoint here and inspect:
+	// g_ready_st_7, g_part_7, g_rev_7, g_int2_7, g_read_err_7
+	// g_ready_st_8, g_part_8, ...
+
+}
+
+void I2C2_MAX30102_FailureMode() {
+
+	uint16_t addr = (0x57 << 1); // 0xAE
+	HAL_StatusTypeDef st_ready = HAL_I2C_IsDeviceReady(&hi2c2, addr, 3, 20);
+	uint32_t err_ready = HAL_I2C_GetError(&hi2c2);
+	// breakpoint: st_ready, err_ready
+	uint8_t part_mem = 0;
+	HAL_StatusTypeDef st_mem = HAL_I2C_Mem_Read(&hi2c2, addr, 0xFF,
+	                                           I2C_MEMADD_SIZE_8BIT,
+	                                           &part_mem, 1, 100);
+	uint32_t err_mem = HAL_I2C_GetError(&hi2c2);
+	// breakpoint: st_mem, err_mem, part_mem
+	uint8_t reg = 0xFF;
+	uint8_t part_seq = 0;
+
+	HAL_StatusTypeDef st_tx = HAL_I2C_Master_Transmit(&hi2c2, addr, &reg, 1, 100);
+	uint32_t err_tx = HAL_I2C_GetError(&hi2c2);
+
+	HAL_StatusTypeDef st_rx = HAL_I2C_Master_Receive(&hi2c2, addr, &part_seq, 1, 100);
+	uint32_t err_rx = HAL_I2C_GetError(&hi2c2);
+	// breakpoint: st_tx, err_tx, st_rx, err_rx, part_seq
+}
+
+void I2C2_MAX30102_ACKing() {
+
+	volatile uint8_t found[128] = {0};
+		/* ACKs for '87' (0x57 – MAX30102) */
+	    for (uint8_t a = 1; a < 127; a++) {
+	        if (HAL_I2C_IsDeviceReady(&hi2c2, (uint16_t)(a << 1), 2, 10) == HAL_OK) {
+	            found[a] = 1;
+	    }
+	}
+}
+
+void I2C2_MAX30102_ReadRegisters() {
+
+	    uint16_t addr = (0x57 << 1);
+	    /* Testing (known) values of addresses */
+	    volatile uint8_t part = rd(&hi2c2, addr, 0xFF);
+	    volatile uint8_t rev  = rd(&hi2c2, addr, 0xFE);
+	    volatile uint8_t mode = rd(&hi2c2, addr, 0x09);
+	    volatile uint8_t int1 = rd(&hi2c2, addr, 0x00);
+	    volatile uint8_t int2 = rd(&hi2c2, addr, 0x01);
+
+}

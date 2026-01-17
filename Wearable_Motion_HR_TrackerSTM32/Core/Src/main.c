@@ -123,11 +123,8 @@ int main(void)
   /* Set starting conditions */
   conditions_INIT();
   /* Setup MAX30102 */
-  if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_10) == GPIO_PIN_RESET ||
-      HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_11) == GPIO_PIN_RESET) {
-      // bus stuck low (hardware issue or slave holding SDA low)
-	  uint8_t boolean = 1;
-  }
+  I2C2_MAX30102_ACKing();
+  I2C2_MAX30102_ReadRegisters();
   MAX30102_temp();
   MAX30102_HR();
   /* Start IT timer */

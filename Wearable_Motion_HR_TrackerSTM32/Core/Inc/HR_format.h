@@ -44,4 +44,38 @@ void MAX30102_temp();
 
 void MAX30102_HR();
 
+/* ––––––––––––––––––––––––––––––––––––––– TEST FUNCTION */
+// MAX30102
+#define MAX30102_ADDR_7BIT   0x57
+#define REG_PART_ID          0xFF
+#define REG_REV_ID           0xFE
+#define REG_INT_STATUS2      0x01
+
+static HAL_StatusTypeDef read_reg(uint16_t dev_addr_8bit, uint8_t reg, uint8_t *val)
+{
+    *val = 0x00;
+    return HAL_I2C_Mem_Read(&hi2c2,
+                            dev_addr_8bit,
+                            reg,
+                            I2C_MEMADD_SIZE_8BIT,
+                            val,
+                            1,
+                            100);
+}
+
+void I2C2_MAX30102_TestFunction();
+
+void I2C2_MAX30102_FailureMode();
+
+void I2C2_MAX30102_ACKing();
+
+static uint8_t rd(I2C_HandleTypeDef *hi2c, uint16_t addr, uint8_t reg)
+	{
+	    uint8_t v = 0;
+	    HAL_I2C_Mem_Read(hi2c, addr, reg, I2C_MEMADD_SIZE_8BIT, &v, 1, 100);
+	    return v;
+	}
+
+void I2C2_MAX30102_ReadRegisters();
+
 #endif /* INC_HR_FORMAT_H_ */
