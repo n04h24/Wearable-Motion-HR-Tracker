@@ -9,15 +9,25 @@
 #include "HR_data.h"
 
 /* Variable definitions */
-uint8_t MODBUS_WRITE_MSG[RTU_MSG_MAXLENGTH];
-uint8_t MODBUS_READ_MSG[RTU_MSG_MAXLENGTH];
+uint8_t MODBUS_WRITE_BUFFER[RTU_MSG_MAXLENGTH];
+uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
 
 /* Implementations */
 void MAX30102_collect() {
-	/* Check response */
-	HAL_StatusTypeDef UART_RET = HAL_UART_Transmit(&huart1, MODBUS_WRITE_MSG, RTU_MSG_MAXLENGTH, 100);
+	/* Collect Data  */
+	HAL_StatusTypeDef UART_RET = HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, RTU_MSG_MAXLENGTH, 100);
+	/* Read Response */
 	if (UART_RET == HAL_OK) {
-		HAL_UART_Receive(&huart1, MODBUS_READ_MSG, RTU_MSG_MAXLENGTH, 100);
+		HAL_UART_Receive(&huart1, MODBUS_READ_BUFFER, RTU_MSG_MAXLENGTH, 100);
+		/* Match valid bytes (& operation) */
+	}
+
+	/* memcpy() function */
+
+	/* Stop collecting data */
+	UART_RET = HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, RTU_MSG_MAXLENGTH, 100);
+	if (UART_RET == HAL_OK) {
+		HAL_UART_Receive(&huart1, MODBUS_READ_BUFFER, RTU_MSG_MAXLENGTH, 100);
 	}
 }
 
@@ -26,5 +36,26 @@ void MAX30102_HR_SPO2() {
 }
 
 void MAX30102_DIE_TEMP() {
+
+}
+
+static uint16_t CRC_check(uint8_t *data, uint8_t len) {
+
+	uint16_t crc = 0xFFFF;
+	  for( uint8_t pos = 0; pos < len; pos++)
+	  {
+	    crc ^= (uint16_t)data[ pos ];
+	    for(uint8_t i = 8; i != 0; i--)
+	    {
+	      if((crc & 0x0001) != 0){
+	        crc >>= 1;
+	        crc ^= 0xA001;
+	      }else{
+	        crc >>= 1;
+	      }
+	    }
+	  }
+	  crc = ((crc & 0x00FF) << 8) | ((crc & 0xFF00) >> 8);
+	  return crc;
 
 }
