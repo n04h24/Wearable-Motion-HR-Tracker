@@ -14,23 +14,23 @@
 /* Defines */
 #define MODBUS_FRAME_WAIT 3.5 /* Char (10-bit) */
 #define RTU_MSG_MAXLENGTH 14
+#define MODBUS_DEV_ADDRESS 0x20
 
 /* Externs */
-typedef struct {
+/* typedef struct {
 	uint8_t Device_Address;
 	uint8_t Funct_Code;
-	uint8_t Reg_Add_A;
-	uint8_t Reg_Add_B;
-	uint8_t Reg_Num_A;
-	uint8_t Reg_Num_B;
+	uint16_t Reg_Address;
+	uint16_t Reg_Number;
 	uint16_t CRC_check;
-} MODBUS_RTU_Transmit;
+} MODBUS_RTU_Transmit; */
 
 extern UART_HandleTypeDef huart1;
 extern uint8_t MODBUS_WRITE_BUFFER[RTU_MSG_MAXLENGTH];
 extern uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
 
 /* Function Declarations */
+static void MODBUS_RTU_format(uint8_t *buffer, uint8_t funct_code);
 void MAX30102_collect();
 void MAX30102_HR_SPO2();
 void MAX30102_DIE_TEMP();

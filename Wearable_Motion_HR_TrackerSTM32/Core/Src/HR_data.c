@@ -20,15 +20,21 @@ void MAX30102_collect() {
 	if (UART_RET == HAL_OK) {
 		HAL_UART_Receive(&huart1, MODBUS_READ_BUFFER, RTU_MSG_MAXLENGTH, 100);
 		/* Match valid bytes (& operation) */
-	}
 
-	/* memcpy() function */
+		/* Pass data & length */
+//		CRC_check()
+
+		/* Copy into struct- (readability) */
+
+	}
 
 	/* Stop collecting data */
 	UART_RET = HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, RTU_MSG_MAXLENGTH, 100);
 	if (UART_RET == HAL_OK) {
 		HAL_UART_Receive(&huart1, MODBUS_READ_BUFFER, RTU_MSG_MAXLENGTH, 100);
 	}
+
+
 }
 
 void MAX30102_HR_SPO2() {
@@ -37,6 +43,20 @@ void MAX30102_HR_SPO2() {
 
 void MAX30102_DIE_TEMP() {
 
+}
+
+static void MODBUS_RTU_format(uint8_t *buffer, uint8_t funct_code) {
+
+	/* Device Address (8-bit) */
+	memcpy(buffer, (uint8_t*)MODBUS_DEV_ADDRESS, 1);
+
+	/* Function Code (8-bit) */
+
+	/* Register Address or Valid Bytes (16-bit) */
+
+	/* Register Number or Data (16-bit/N*8-bit) */
+
+	/* CRC check (16-bit) */
 }
 
 static uint16_t CRC_check(uint8_t *data, uint8_t len) {
