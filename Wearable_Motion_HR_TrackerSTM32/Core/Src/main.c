@@ -115,7 +115,6 @@ int main(void)
   /* Start IT timer */
   HAL_TIM_Base_Start_IT(&htim2);
 
-//  f_open();
   /* USER CODE END 2 */
 
   /* Infinite loop */
