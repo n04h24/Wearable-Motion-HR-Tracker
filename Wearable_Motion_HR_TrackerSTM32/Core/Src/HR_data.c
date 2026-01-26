@@ -72,11 +72,11 @@ static void MODBUS_send_buffer(uint8_t *buffer, uint8_t funct_code, uint8_t reg_
 	/* Calculate CRC */
 	uint16_t crc_val = CRC_check(buffer, pointer_MSG); /* Verify pointer */
 	/* Append CRC (upper) */
-	uint8_t crc_val_A = (uint16_t)crc_val & (0xFF00 >> 8);
+	uint8_t crc_val_A = ((uint16_t)crc_val & (uint16_t)0xFF00) >> 8;
 	memcpy(&buffer[pointer_MSG], &crc_val_A, 1);
 	pointer_MSG++;
 	/* Append CRC (lower) */
-	uint8_t crc_val_B = (uint16_t)crc_val & (0x00FF);
+	uint8_t crc_val_B = (uint16_t)crc_val & ((uint16_t)0x00FF);
 	memcpy(&buffer[pointer_MSG], &crc_val_B, 1);
 	pointer_MSG = 0;
 
