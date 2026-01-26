@@ -37,7 +37,7 @@ extern uint8_t MODBUS_WRITE_BUFFER[RTU_MSG_MAXLENGTH];
 extern uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
 
 /* Function Declarations */
-static void MODBUS_send_buffer(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA, uint8_t reg_addB, uint8_t reg_numA, uint8_t reg_numB);
+static void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA, uint8_t reg_addB, uint8_t reg_numA, uint8_t reg_numB);
 void MAX30102_collect();
 void MAX30102_HR_SPO2();
 void MAX30102_DIE_TEMP();
