@@ -9,26 +9,20 @@
 #include "HR_data.h"
 
 /* Variable definitions */
-uint8_t MODBUS_WRITE_BUFFER[RTU_MSG_MAXLENGTH];
+uint8_t MODBUS_WRITE_BUFFER[8];
 uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
+uint8_t BYTE_RX = 0;
 
 /* Implementations */
 void MAX30102_collect() {
 	/* Format message into buffer */
 	MODBUS_format_send(MODBUS_WRITE_BUFFER, COLLECT_DATA, COLLECT_DATA_REGADD_A,
 			COLLECT_DATA_REGADD_B, COLLECT_REG_NUM_START_A, COLLECT_REG_NUM_START_B);
+	/* Prepare data reception */
+	HAL_UART_Receive_IT(&huart1, MODBUS_READ_BUFFER, 8);
 	/* Send "Collect Data"  */
-	HAL_StatusTypeDef UART_RET = HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, 8, 100);
+	HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, 8, 100);
 	/* Read Response */
-	if (UART_RET == HAL_OK) {
-		HAL_UART_Receive(&huart1, MODBUS_READ_BUFFER, RTU_MSG_MAXLENGTH, 100);
-		/* Match valid bytes (& operation) */
-	}
-	/* Stop collecting data
-	UART_RET = HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, RTU_MSG_MAXLENGTH, 100);
-	if (UART_RET == HAL_OK) {
-		HAL_UART_Receive(&huart1, MODBUS_READ_BUFFER, RTU_MSG_MAXLENGTH, 100);
-	} */
 }
 
 void MAX30102_HR_SPO2() {

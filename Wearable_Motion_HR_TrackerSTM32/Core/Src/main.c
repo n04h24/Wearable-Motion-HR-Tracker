@@ -120,7 +120,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_StatusTypeDef returnval = HAL_I2C_IsDeviceReady(&hi2c2, 0x57 << 1, 2, 100);
+
   /* Setup MPU6050 */
   MPU6050_init();
   /* Set starting conditions */
@@ -424,7 +424,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -559,11 +559,6 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-/* Initial Conditions */
-
-	// IIR[_init_] = 0;
-	// Sample[_init_]
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 	if (htim == &htim2){
@@ -574,6 +569,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		/* Interpret magnitude */
 		vector_tracking();
 	}
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  /* Check which UART instance triggered the callback */
+  if (huart->Instance == USART1)
+  {
+    BYTE_RX++;
+  }
 }
 /* USER CODE END 4 */
 
