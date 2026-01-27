@@ -35,7 +35,8 @@
 extern UART_HandleTypeDef huart1;
 extern uint8_t MODBUS_WRITE_BUFFER[8];
 extern uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
-extern uint8_t BYTE_RX;
+extern volatile uint8_t BYTE_RX;
+extern volatile uint8_t ERROR_404;
 
 /* Function Declarations */
 static void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA, uint8_t reg_addB, uint8_t reg_numA, uint8_t reg_numB);
