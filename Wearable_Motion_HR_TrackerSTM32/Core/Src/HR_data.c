@@ -9,18 +9,51 @@
 #include "HR_data.h"
 
 /* Variable definitions */
+uint8_t RX_BUSY = 0;
+uint8_t RX_BUSY_DATA = 0;
 uint8_t MODBUS_WRITE_BUFFER[8];
 uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
-volatile uint8_t BYTE_RX = 0;
-volatile uint8_t ERROR_404 = 0;
+volatile uint8_t HR_pointer;
+uint8_t HEARTBEAT_BUFF[SAMPLE_HR_COUNT];
+volatile uint8_t TOGGLE_COLLECT = 0; /* 0 "OFF" && 1 "ON" */
+volatile uint16_t CRC_VALIDATE;
 
 /* Implementations */
-void MAX30102_collect() {
-	/* Format message into buffer */
-	MODBUS_format_send(MODBUS_WRITE_BUFFER, COLLECT_DATA, COLLECT_DATA_REGADD_A,
-			COLLECT_DATA_REGADD_B, COLLECT_REG_NUM_START_A, COLLECT_REG_NUM_START_B);
+void MAX30102_collect_TOGGLE() {
 	/* Prepare data reception (RX) */
-	if (HAL_UART_Receive_IT(&huart1, MODBUS_READ_BUFFER, 8) != HAL_OK) {
+	HAL_UART_Receive_IT(&huart1, MODBUS_READ_BUFFER, 8);
+	/* Toggle */
+	if (TOGGLE_COLLECT == 0) {
+		/* Format START message into buffer */
+		MODBUS_format_send(MODBUS_WRITE_BUFFER, COLLECT_DATA, COLLECT_DATA_REGADD_A,
+				COLLECT_DATA_REGADD_B, COLLECT_REG_NUM_START_A, COLLECT_REG_NUM_START_B);
+		/* Send "START collecting data" (TX) */
+		if (HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, 8, 100) != HAL_OK) {
+			/* Error handling */
+			return;
+			}
+		TOGGLE_COLLECT = 1;
+	}
+	else {
+		/* Format STOP message into buffer */
+		MODBUS_format_send(MODBUS_WRITE_BUFFER, COLLECT_DATA, COLLECT_DATA_REGADD_A,
+				COLLECT_DATA_REGADD_B, COLLECT_REG_NUM_STOP_A, COLLECT_REG_NUM_STOP_B);
+		/* Send "STOP collecting data" (TX) */
+		if (HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, 8, 100) != HAL_OK) {
+			/* Error handling */
+			return;
+			}
+		TOGGLE_COLLECT = 0;
+	}
+}
+
+void MAX30102_HR_SPO2() {
+
+	/* Format START message into buffer */
+	MODBUS_format_send(MODBUS_WRITE_BUFFER, COLLECT_HR_SPO2, HR_SPO2_REGADD_A,
+			HR_SPO2_REGADD_B, HR_SPO2_REGNUM_A, HR_SPO2_REGNUM_B);
+	/* Prepare data reception (RX) */
+	if (HAL_UART_Receive_IT(&huart1, MODBUS_READ_BUFFER, 13) != HAL_OK) {
 		/* Error handling */
 		return;
 		}
@@ -29,15 +62,29 @@ void MAX30102_collect() {
 		/* Error handling */
 		return;
 		}
-
 }
 
-void MAX30102_HR_SPO2() {
+void HR_BUFF_storage() {
+	/* Verify & store */
+	CRC_VALIDATE = CRC_check(MODBUS_READ_BUFFER, 13);
+	/* HR buffer */
+	if (CRC_VALIDATE == 0 && CRC_VALIDATE != 0x7F) {
+		HEARTBEAT_BUFF[HR_pointer] = MODBUS_READ_BUFFER[8];
+	}
+	/* CRC error handling */
+	else {
+		HEARTBEAT_BUFF[HR_pointer] = 0xE;
+	}
 
-}
+	HR_pointer++;
 
-void MAX30102_DIE_TEMP() {
-
+	/* Buffer overflow management */
+	if (HR_pointer >= 13) {
+	/* Clear buffer */
+	memset(HEARTBEAT_BUFF, 0, 13);
+	/* Reset pointer */
+	HR_pointer = 0;
+	}
 }
 
 static void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA,

@@ -121,14 +121,18 @@ int main(void)
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
+  /* Setup MAX30102 */
+  MAX30102_collect_TOGGLE();
   /* Setup MPU6050 */
   MPU6050_init();
   /* Set starting conditions */
   conditions_INIT();
-  /* Setup MAX30102 */
-  MAX30102_collect();
+  /* Record HR & SPO2 */
+//  MAX30102_HR_SPO2();
+  HR_BUFF_storage();
   /* Start IT timer */
   HAL_TIM_Base_Start_IT(&htim2);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -576,7 +580,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   /* Check which UART instance triggered the callback */
   if (huart->Instance == USART1)
   {
-    BYTE_RX++;
+	  /* Store after reading */
+	  HR_BUFF_storage();
   }
 }
 /* USER CODE END 4 */
