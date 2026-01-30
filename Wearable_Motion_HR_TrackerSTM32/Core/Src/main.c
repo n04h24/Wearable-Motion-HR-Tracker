@@ -624,11 +624,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		vector_tracking();
 	}
 
-	if (htim == &htim3) {
-		/* Retrieve HR & SPO2 (unchecked) */
-		MAX30102_HR_SPO2();
-		RX_BUSY_DATA++;
-	}
+//	if (htim == &htim3 && RX_BUSY == 0) {
+//		/* Retrieve HR & SPO2 (unchecked) */
+//		MAX30102_HR_SPO2();
+//		POINTER_RX++;
+//	}
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -636,6 +636,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   /* Check which UART instance triggered the callback */
   if (huart->Instance == USART1)
   {
+	  RX_BUSY = 0;
 	  /* Store after reading */
 	  HR_BUFF_storage();
   }

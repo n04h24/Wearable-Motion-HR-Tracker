@@ -9,8 +9,8 @@
 #include "HR_data.h"
 
 /* Variable definitions */
-uint8_t RX_BUSY = 0;
-uint8_t RX_BUSY_DATA = 0;
+volatile uint8_t RX_BUSY = 0;
+volatile uint8_t POINTER_RX = 0;
 uint8_t MODBUS_WRITE_BUFFER[8];
 uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
 volatile uint8_t HR_pointer;
@@ -53,15 +53,10 @@ void MAX30102_HR_SPO2() {
 	MODBUS_format_send(MODBUS_WRITE_BUFFER, COLLECT_HR_SPO2, HR_SPO2_REGADD_A,
 			HR_SPO2_REGADD_B, HR_SPO2_REGNUM_A, HR_SPO2_REGNUM_B);
 	/* Prepare data reception (RX) */
-	if (HAL_UART_Receive_IT(&huart1, MODBUS_READ_BUFFER, 13) != HAL_OK) {
-		/* Error handling */
-		return;
-		}
+	HAL_UART_Receive_IT(&huart1, MODBUS_READ_BUFFER, 13);
+	RX_BUSY = 1;
 	/* Send "Collect Data" (TX) */
-	if (HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, 8, 100) != HAL_OK) {
-		/* Error handling */
-		return;
-		}
+	HAL_UART_Transmit(&huart1, MODBUS_WRITE_BUFFER, 8, 100);
 }
 
 void HR_BUFF_storage() {
@@ -75,9 +70,9 @@ void HR_BUFF_storage() {
 	else {
 		HEARTBEAT_BUFF[HR_pointer] = 0xE;
 	}
-
+	/* Move pointer (storage) and clear buffer */
 	HR_pointer++;
-
+	memset(MODBUS_READ_BUFFER, 0, 13);
 	/* Buffer overflow management */
 	if (HR_pointer >= 13) {
 	/* Clear buffer */

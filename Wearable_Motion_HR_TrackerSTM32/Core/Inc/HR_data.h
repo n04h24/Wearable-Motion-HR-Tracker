@@ -39,7 +39,8 @@
 
 /* Externs */
 extern UART_HandleTypeDef huart1;
-extern uint8_t RX_BUSY_DATA;
+extern volatile uint8_t RX_BUSY;
+extern volatile uint8_t POINTER_RX;
 extern uint8_t MODBUS_WRITE_BUFFER[8];
 extern uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
 extern volatile uint8_t HR_pointer;
