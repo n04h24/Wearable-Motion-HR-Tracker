@@ -10,10 +10,11 @@
 
 /* Variable definitions */
 volatile uint8_t RX_BUSY = 0;
+volatile uint16_t HR_ERROR = 0;
 volatile uint8_t POINTER_RX = 0;
 uint8_t MODBUS_WRITE_BUFFER[8];
 uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
-volatile uint8_t HR_pointer;
+volatile uint8_t HR_POINTER;
 uint8_t HEARTBEAT_BUFF[SAMPLE_HR_COUNT];
 volatile uint8_t TOGGLE_COLLECT = 0; /* 0 "OFF" && 1 "ON" */
 volatile uint16_t CRC_VALIDATE;
@@ -63,22 +64,22 @@ void HR_BUFF_storage() {
 	/* Verify & store */
 	CRC_VALIDATE = CRC_check(MODBUS_READ_BUFFER, 13);
 	/* HR buffer */
-	if (CRC_VALIDATE == 0 && CRC_VALIDATE != 0x7F) {
-		HEARTBEAT_BUFF[HR_pointer] = MODBUS_READ_BUFFER[8];
+	if (CRC_VALIDATE == 0) {
+		HEARTBEAT_BUFF[HR_POINTER] = MODBUS_READ_BUFFER[8];
+		HR_POINTER++;
 	}
 	/* CRC error handling */
 	else {
-		HEARTBEAT_BUFF[HR_pointer] = 0xE;
+		HR_ERROR++;
 	}
 	/* Move pointer (storage) and clear buffer */
-	HR_pointer++;
 	memset(MODBUS_READ_BUFFER, 0, 13);
 	/* Buffer overflow management */
-	if (HR_pointer >= 13) {
+	if (HR_POINTER == 13) {
 	/* Clear buffer */
 	memset(HEARTBEAT_BUFF, 0, 13);
 	/* Reset pointer */
-	HR_pointer = 0;
+	HR_POINTER = 0;
 	}
 }
 

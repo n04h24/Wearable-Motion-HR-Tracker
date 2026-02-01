@@ -41,9 +41,10 @@
 extern UART_HandleTypeDef huart1;
 extern volatile uint8_t RX_BUSY;
 extern volatile uint8_t POINTER_RX;
+extern volatile uint16_t HR_ERROR;
 extern uint8_t MODBUS_WRITE_BUFFER[8];
 extern uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
-extern volatile uint8_t HR_pointer;
+extern volatile uint8_t HR_POINTER;
 extern uint8_t HEARTBEAT_BUFF[SAMPLE_HR_COUNT];
 extern volatile uint8_t TOGGLE_COLLECT;
 extern volatile uint16_t CRC_VALIDATE;
