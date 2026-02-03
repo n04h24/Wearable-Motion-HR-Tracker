@@ -26,6 +26,7 @@
 #include "filtering_accel.h"
 #include "peak_detection.h"
 #include "HR_data.h"
+#include "OLED_format.h"
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
 /* USER CODE END Includes */
@@ -135,7 +136,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim3);
   /* Set SSD1306 */
   ssd1306_Init();
-  ssd1306_Fill(Black);
+  START_DISPLAY();
   /* USER CODE END 2 */
 
   /* Infinite loop */
