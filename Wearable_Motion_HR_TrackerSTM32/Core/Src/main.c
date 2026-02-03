@@ -27,6 +27,7 @@
 #include "peak_detection.h"
 #include "HR_data.h"
 #include "ssd1306.h"
+#include "ssd1306_fonts.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -78,7 +79,7 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-const char test_String[] = "Success";
+
 /* USER CODE END 0 */
 
 /**
@@ -121,11 +122,6 @@ int main(void)
   MX_I2C2_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  ssd1306_Init();
-  ssd1306_SetCursor(0, 0);
-  ssd1306_Fill(Black);
-//  ssd1306_WriteString(test_String, Font_7x10, White);
-  ssd1306_UpdateScreen();
 
   /* Setup MAX30102 */
   MAX30102_collect_TOGGLE();
@@ -137,7 +133,9 @@ int main(void)
   /* Start IT timer */
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start_IT(&htim3);
-
+  /* Set SSD1306 */
+  ssd1306_Init();
+  ssd1306_Fill(Black);
   /* USER CODE END 2 */
 
   /* Infinite loop */

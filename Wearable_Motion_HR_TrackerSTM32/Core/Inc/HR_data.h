@@ -50,10 +50,10 @@ extern volatile uint8_t TOGGLE_COLLECT;
 extern volatile uint16_t CRC_VALIDATE;
 
 /* Function Declarations */
-static void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA, uint8_t reg_addB, uint8_t reg_numA, uint8_t reg_numB);
+void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA, uint8_t reg_addB, uint8_t reg_numA, uint8_t reg_numB);
 void MAX30102_collect_TOGGLE();
 void MAX30102_HR_SPO2();
 void HR_BUFF_storage();
-static uint16_t CRC_check(uint8_t *data, uint8_t len);
+uint16_t CRC_check(uint8_t *data, uint8_t len);
 
 #endif /* INC_HR_DATA_H_ */

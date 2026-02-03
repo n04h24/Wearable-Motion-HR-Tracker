@@ -9,13 +9,16 @@
 #define SRC_OLED_FORMAT_H_
 
 /* Includes */
-#include "main.h"
+#include "HR_data.h"
+#include "ssd1306.h"
+#include "ssd1306_fonts.h"
 
 /* Defines */
-#define SSD1306_ADD
 
 /* Extern */
-
+extern char HR_STRING_BUFF[SAMPLE_HR_COUNT];
 /* Function Declarations */
+void HR_DISPLAY();
+void STEP_DISPLAY();
 
 #endif /* SRC_OLED_FORMAT_H_ */

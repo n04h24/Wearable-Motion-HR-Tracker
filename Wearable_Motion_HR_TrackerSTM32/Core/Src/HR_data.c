@@ -83,7 +83,7 @@ void HR_BUFF_storage() {
 	}
 }
 
-static void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA,
+void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA,
 								uint8_t reg_addB, uint8_t reg_numA, uint8_t reg_numB) {
 	/* Memory helper functions */
 	uint8_t pointer_MSG = 0;
@@ -128,7 +128,7 @@ static void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_
 	pointer_MSG = 0;
 }
 
-static uint16_t CRC_check(uint8_t *data, uint8_t len) {
+uint16_t CRC_check(uint8_t *data, uint8_t len) {
 
 	uint16_t crc = 0xFFFF;
 	  for( uint8_t pos = 0; pos < len; pos++)
