@@ -15,6 +15,7 @@ MPU6050_Accelerometer START_VECTOR;
 MPU6050_Accelerometer PEAK_VECTOR;
 MPU6050_Accelerometer STOP_VECTOR;
 MPU6050_Accelerometer PEAK_SERIES[PEAK_SERIES_SIZE];
+uint16_t TOTAL_STEPS = 0;
 /* INTERRUPT (Sample Acceleration >> Receive Magnitude) */
 
 void vector_tracking() {
@@ -77,6 +78,7 @@ void vector_tracking() {
 				sprintf(UART, "Step Finished! Duration is: %lu", STEP.TIME);
 				HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
 				VECTOR_STATE = 0;
+				TOTAL_STEPS++;
 			}
 			break;
 	default:

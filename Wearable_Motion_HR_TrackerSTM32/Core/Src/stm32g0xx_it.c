@@ -26,6 +26,7 @@
 #include "filtering_accel.h"
 #include "peak_detection.h"
 #include "HR_data.h"
+#include "OLED_format.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

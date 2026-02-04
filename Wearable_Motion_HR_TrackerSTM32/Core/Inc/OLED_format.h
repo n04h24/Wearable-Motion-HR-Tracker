@@ -11,8 +11,11 @@
 /* Includes */
 #include "HR_data.h"
 #include "filtering_accel.h"
+#include "peak_detection.h"
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
+#include "math.h"
+#include "inttypes.h"
 
 /* Defines */
 

@@ -30,6 +30,8 @@ extern MPU6050_Accelerometer START_VECTOR;
 extern MPU6050_Accelerometer PEAK_VECTOR;
 extern MPU6050_Accelerometer STOP_VECTOR;
 extern MPU6050_Accelerometer PEAK_SERIES[PEAK_SERIES_SIZE];
+extern uint16_t TOTAL_STEPS;
+
 /* Function Prototypes */
 void vector_tracking();
 

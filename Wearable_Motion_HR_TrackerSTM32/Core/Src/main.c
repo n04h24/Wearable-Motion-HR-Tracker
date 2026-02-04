@@ -144,6 +144,9 @@ int main(void)
 
   while (1)
   {
+	  /* Update display */
+	  	display_STEP();
+	  	display_HR();
 
     /* USER CODE END WHILE */
 
