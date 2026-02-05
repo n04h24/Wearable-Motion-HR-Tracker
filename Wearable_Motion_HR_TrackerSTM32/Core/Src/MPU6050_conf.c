@@ -125,7 +125,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 
 	HAL_StatusTypeDef status;
 	/* Retrieve upper-X value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 20);
 	ACCEL_X_H = check_memory;
 
 	if (status != HAL_OK) {
@@ -134,7 +134,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	}
 
 	/* Retrieve lower-X value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_XOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 20);
 	ACCEL_X_L = check_memory;
 
 	if (status != HAL_OK) {
@@ -146,7 +146,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	*raw_X = (int16_t)(((uint16_t)ACCEL_X_H << 8) | ACCEL_X_L);
 
 	/* Retrieve upper-Y value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_YOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 20);
 	ACCEL_Y_H = check_memory;
 
 	if (status != HAL_OK) {
@@ -155,7 +155,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	}
 
 	/* Retrieve lower-Y value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_YOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_YOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 20);
 	ACCEL_Y_L = check_memory;
 
 	if (status != HAL_OK) {
@@ -167,7 +167,7 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 	*raw_Y = (int16_t)(((uint16_t)ACCEL_Y_H << 8) | ACCEL_Y_L);
 
 	/* Retrieve upper-Z value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_ZOUT_H, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 20);
 	ACCEL_Z_H = check_memory;
 
 	if (status != HAL_OK) {
@@ -176,12 +176,11 @@ void readA_CONCAT(int16_t *raw_X, int16_t *raw_Y, int16_t *raw_Z) {
 		}
 
 	/* Retrieve lower-Z value */
-	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_ZOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 100);
+	status = HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADD << 1, ACCEL_ZOUT_L, I2C_MEMADD_SIZE_8BIT, &check_memory, 1, 20);
 	ACCEL_Z_L = check_memory;
 
 	if (status != HAL_OK) {
-		snprintf(UART, strlen(UART), "Status of Lower_ACCELZ: 0x%02X\n", status);
-		HAL_UART_Transmit(&huart2, (uint8_t*)UART, strlen(UART), 100);
+
 	}
 
 	/* Shift upper << 8; | operation to combine lower */

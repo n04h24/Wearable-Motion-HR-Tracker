@@ -15,7 +15,9 @@ volatile uint8_t POINTER_RX = 0;
 uint8_t MODBUS_WRITE_BUFFER[8];
 uint8_t MODBUS_READ_BUFFER[RTU_MSG_MAXLENGTH];
 volatile uint8_t HR_POINTER;
+volatile uint8_t HR_POINTER_AVG;
 uint8_t HEARTBEAT_BUFF[SAMPLE_HR_COUNT];
+uint8_t HEARTBEAT_AVG_BUFF[SAMPLE_HR_COUNT];
 volatile uint8_t TOGGLE_COLLECT = 0; /* 0 "OFF" && 1 "ON" */
 volatile uint16_t CRC_VALIDATE;
 
@@ -75,11 +77,37 @@ void HR_BUFF_storage() {
 	/* Move pointer (storage) and clear buffer */
 	memset(MODBUS_READ_BUFFER, 0, 13);
 	/* Buffer overflow management */
-	if (HR_POINTER == 13) {
-	/* Clear buffer */
-	memset(HEARTBEAT_BUFF, 0, 13);
-	/* Reset pointer */
-	HR_POINTER = 0;
+	if (HR_POINTER == SAMPLE_HR_COUNT-1) {
+		/* Shift last element to 0th position */
+		HEARTBEAT_BUFF[0] = HEARTBEAT_BUFF[HR_POINTER];
+		/* Clear buffer */
+		memset(&HEARTBEAT_BUFF[1], 0, SAMPLE_HR_COUNT-2);
+		/* Reset pointer */
+		HR_POINTER = 0;
+	}
+}
+
+void HR_AVG() {
+	/* Sum variable */
+	float sum_HR = 0;
+	for (size_t i = 0; i < sizeof(HEARTBEAT_BUFF); i++) {
+		/* Check for null values */
+		if (HEARTBEAT_BUFF[i] != 0) {
+			/* Sum non-zero elements */
+			sum_HR += HEARTBEAT_BUFF[i];
+		}
+	}
+	/* Store */
+	HEARTBEAT_AVG_BUFF[HR_POINTER_AVG] = (uint8_t)(sum_HR / sizeof(HEARTBEAT_BUFF));
+	HR_POINTER_AVG++;
+	/* Reset if pointer > sizeof(buffer) */
+	if (HR_POINTER_AVG == SAMPLE_HR_COUNT-1) {
+		/* Shift last element to 0th position */
+		HEARTBEAT_AVG_BUFF[0] = HEARTBEAT_AVG_BUFF[HR_POINTER_AVG];
+		/* Clear buffer */
+		memset(&HEARTBEAT_BUFF[1], 0, SAMPLE_HR_COUNT-2);
+		/* Reset pointer */
+		HR_POINTER_AVG = 0;
 	}
 }
 

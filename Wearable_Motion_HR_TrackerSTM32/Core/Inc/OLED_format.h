@@ -20,7 +20,7 @@
 /* Defines */
 
 /* Extern */
-extern char HR_STRING_BUFF[7];
+extern char HR_STRING_BUFF[9];
 extern char STEP_STRING_BUFF[5];
 
 /* Function Declarations */

@@ -8,7 +8,7 @@
 #include "OLED_format.h"
 
 /* Variable definitions */
-char HR_STRING_BUFF[7];
+char HR_STRING_BUFF[9];
 char STEPS_TAKEN[5];
 
 /* Implementations */
@@ -41,7 +41,7 @@ void display_HR() {
 		STR_INCREMENT = 0;
 	}
 	uint8_t TEMP_HR_STR = HEARTBEAT_BUFF[HR_POINTER-STR_INCREMENT];
-	snprintf(HR_STRING_BUFF, sizeof(HR_STRING_BUFF), "%ubpm", TEMP_HR_STR);
+	snprintf(HR_STRING_BUFF, sizeof(HR_STRING_BUFF), "%ubpm  ", TEMP_HR_STR);
 	ssd1306_SetCursor(58, 40);
 	ssd1306_WriteString(HR_STRING_BUFF, Font_7x10, White);
 	ssd1306_UpdateScreen();
