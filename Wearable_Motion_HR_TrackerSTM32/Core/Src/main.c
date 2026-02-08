@@ -136,6 +136,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim3);
   /* Set SSD1306 */
   ssd1306_Init();
+  HAL_StatusTypeDef errorCHK = HAL_I2C_IsDeviceReady(&hi2c2, SSD1306_I2C_ADDR, 1, 50);
   START_DISPLAY();
   /* USER CODE END 2 */
 
