@@ -74,9 +74,14 @@ void HR_BUFF_storage() {
 	else {
 		HR_ERROR++;
 	}
-	/* Move pointer (storage) and clear buffer */
-	memset(MODBUS_READ_BUFFER, 0, 13);
 	/* Buffer overflow management */
+	memset(MODBUS_READ_BUFFER, 0, 13);
+	/* Retrieve average value */
+}
+
+void HR_AVG() {
+
+	/* Move pointer (storage) and clear buffer */
 	if (HR_POINTER == SAMPLE_HR_COUNT-1) {
 		/* Shift last element to 0th position */
 		HEARTBEAT_BUFF[0] = HEARTBEAT_BUFF[HR_POINTER];
@@ -84,31 +89,29 @@ void HR_BUFF_storage() {
 		memset(&HEARTBEAT_BUFF[1], 0, SAMPLE_HR_COUNT-2);
 		/* Reset pointer */
 		HR_POINTER = 0;
-	}
-}
 
-void HR_AVG() {
-	/* Sum variable */
-	float sum_HR = 0;
-	for (size_t i = 0; i < sizeof(HEARTBEAT_BUFF); i++) {
-		/* Check for null values */
-		if (HEARTBEAT_BUFF[i] != 0) {
-			/* Sum non-zero elements */
-			sum_HR += HEARTBEAT_BUFF[i];
+		/* Sum variable */
+		float sum_HR = 0;
+		for (size_t i = 0; i < sizeof(HEARTBEAT_BUFF); i++) {
+			/* Check for null values */
+			if (HEARTBEAT_BUFF[i] != 0) {
+				/* Sum non-zero elements */
+				sum_HR += HEARTBEAT_BUFF[i];
+			}
 		}
-	}
-	/* Store */
-	HEARTBEAT_AVG_BUFF[HR_POINTER_AVG] = (uint8_t)(sum_HR / sizeof(HEARTBEAT_BUFF));
-	HR_POINTER_AVG++;
-	/* Reset if pointer > sizeof(buffer) */
-	if (HR_POINTER_AVG == SAMPLE_HR_COUNT-1) {
-		/* Shift last element to 0th position */
-		HEARTBEAT_AVG_BUFF[0] = HEARTBEAT_AVG_BUFF[HR_POINTER_AVG];
-		/* Clear buffer */
-		memset(&HEARTBEAT_BUFF[1], 0, SAMPLE_HR_COUNT-2);
-		/* Reset pointer */
-		HR_POINTER_AVG = 0;
-	}
+		/* Store */
+		HEARTBEAT_AVG_BUFF[HR_POINTER_AVG] = (uint8_t)(sum_HR / sizeof(HEARTBEAT_BUFF));
+		HR_POINTER_AVG++;
+		/* Reset if pointer > sizeof(buffer) */
+		if (HR_POINTER_AVG == SAMPLE_HR_COUNT-1) {
+			/* Shift last element to 0th position */
+			HEARTBEAT_AVG_BUFF[0] = HEARTBEAT_AVG_BUFF[HR_POINTER_AVG];
+			/* Clear buffer */
+			memset(&HEARTBEAT_BUFF[1], 0, SAMPLE_HR_COUNT-2);
+			/* Reset pointer */
+			HR_POINTER_AVG = 0;
+			}
+		}
 }
 
 void MODBUS_format_send(uint8_t *buffer, uint8_t funct_code, uint8_t reg_addA,
